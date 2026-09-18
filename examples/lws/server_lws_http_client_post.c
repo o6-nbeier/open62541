@@ -92,7 +92,7 @@ int main(int argc, const char **argv) {
     cm->openConnection(cm, &configMap, NULL, &requestId, connectionCallback);
     for(int i = 0; i < COUNT; i++) {
         requestHandle = (UA_UInt32)i;
-        UA_ByteString msg = UA_BYTESTRING_ALLOC("text=hallo&send=data");
+        UA_ByteString msg = UA_BYTESTRING_ALLOC_RAW("text=hallo&send=data", sizeof("text=hallo&send=data")-1);
         cm->sendWithConnection(cm, requestId, &sendConfigMap, &msg);
     }
 

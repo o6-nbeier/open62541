@@ -1579,7 +1579,7 @@ UA_ClientConfig_setAuthenticationUsername(UA_ClientConfig *config,
     if(!identityToken)
         return UA_STATUSCODE_BADOUTOFMEMORY;
     identityToken->userName = UA_STRING_ALLOC(username);
-    identityToken->password = UA_BYTESTRING_ALLOC(password);
+    identityToken->password = UA_BYTESTRING_ALLOC_RAW(password, strlen(password));
     UA_ExtensionObject_clear(&config->userIdentityToken);
     UA_ExtensionObject_setValue(&config->userIdentityToken, identityToken,
                                 &UA_TYPES[UA_TYPES_USERNAMEIDENTITYTOKEN]);

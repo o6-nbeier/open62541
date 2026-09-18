@@ -73,7 +73,7 @@ readPrivateKeyPassword(UA_ByteString *password) {
     if(buf[len-1] == '\n')
         buf[len-1] = 0;
 
-    *password = UA_BYTESTRING_ALLOC(buf);
+    *password = UA_BYTESTRING_ALLOC_RAW(buf, strlen(buf));
     return UA_STATUSCODE_GOOD;
 }
 #endif

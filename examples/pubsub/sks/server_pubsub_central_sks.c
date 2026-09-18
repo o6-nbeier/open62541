@@ -83,9 +83,9 @@ disableOutdatedSecurityPolicy(UA_ServerConfig *config) {
     for(size_t i = 0; i < config->endpointsSize; i++) {
         UA_EndpointDescription *ep = &config->endpoints[i];
         UA_ByteString basic128uri =
-            UA_BYTESTRING("http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15");
+            UA_BYTESTRING_RAW("http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15", sizeof("http://opcfoundation.org/UA/SecurityPolicy#Basic128Rsa15")-1);
         UA_ByteString basic256uri =
-            UA_BYTESTRING("http://opcfoundation.org/UA/SecurityPolicy#Basic256");
+            UA_BYTESTRING_RAW("http://opcfoundation.org/UA/SecurityPolicy#Basic256", sizeof("http://opcfoundation.org/UA/SecurityPolicy#Basic256")-1);
         if(!UA_String_equal(&ep->securityPolicyUri, &basic128uri) &&
            !UA_String_equal(&ep->securityPolicyUri, &basic256uri))
             continue;
