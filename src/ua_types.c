@@ -772,6 +772,16 @@ UA_ByteString_allocBuffer(UA_ByteString *bs, size_t length) {
     return UA_STATUSCODE_GOOD;
 }
 
+UA_ByteString
+UA_BYTESTRING_ALLOC_RAW(const void *buf, size_t len) {
+    UA_ByteString bs;
+    UA_StatusCode res = UA_ByteString_allocBuffer(&bs, len);
+    if(res != UA_STATUSCODE_GOOD || len == 0)
+        return bs;
+    memcpy(bs.data, buf, len);
+    return bs;
+}
+
 /* NodeId */
 static void
 NodeId_clear(void *p, const UA_DataType *_) {
@@ -878,7 +888,7 @@ UA_NODEID_BYTESTRING(UA_UInt16 nsIndex, char *chars) {
     memset(&id, 0, sizeof(UA_NodeId));
     id.namespaceIndex = nsIndex;
     id.identifierType = UA_NODEIDTYPE_BYTESTRING;
-    id.identifier.byteString = UA_BYTESTRING(chars);
+    id.identifier.byteString = UA_BYTESTRING_RAW(chars, strlen(chars));
     return id;
 }
 
@@ -889,7 +899,7 @@ UA_NODEID_BYTESTRING_ALLOC(UA_UInt16 nsIndex,
     memset(&id, 0, sizeof(UA_NodeId));
     id.namespaceIndex = nsIndex;
     id.identifierType = UA_NODEIDTYPE_BYTESTRING;
-    id.identifier.byteString = UA_BYTESTRING_ALLOC(chars);
+    id.identifier.byteString = UA_BYTESTRING_ALLOC_RAW(chars, strlen(chars));
     return id;
 }
 

@@ -344,6 +344,16 @@ UA_ByteString_fromBase64(UA_ByteString *bs,
     return UA_STATUSCODE_GOOD;
 }
 
+UA_ByteString
+UA_BYTESTRING_BASE64(const char *chars) {
+    UA_ByteString bs = UA_BYTESTRING_NULL;
+    if(!chars)
+        return bs;
+    UA_String in = UA_STRING((char*)(uintptr_t)chars);
+    UA_ByteString_fromBase64(&bs, &in);
+    return bs;
+}
+
 static u8
 printNum(i32 n, char *pos, u8 min_digits) {
     char digits[10];

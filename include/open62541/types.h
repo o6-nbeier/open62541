@@ -390,8 +390,40 @@ UA_StatusCode UA_EXPORT
 UA_ByteString_fromBase64(UA_ByteString *bs,
                          const UA_String *input);
 
-#define UA_BYTESTRING(chars) UA_STRING(chars)
-#define UA_BYTESTRING_ALLOC(chars) UA_STRING_ALLOC(chars)
+/* Points to the given buffer without copying. The length is taken as given
+ * instead of derived from strlen, so (unlike UA_BYTESTRING) it correctly
+ * represents content with embedded zero bytes. */
+#define UA_BYTESTRING_RAW(buf, len) ((UA_ByteString){(len), (UA_Byte*)(buf)})
+
+/* Copies len bytes from the given buffer into a newly allocated ByteString.
+ * The length is taken as given instead of derived from strlen, so (unlike
+ * UA_BYTESTRING_ALLOC) it correctly represents content with embedded zero
+ * bytes. Returns UA_BYTESTRING_NULL if allocation fails. */
+UA_EXPORT UA_ByteString
+UA_BYTESTRING_ALLOC_RAW(const void *buf, size_t len);
+
+/* Decodes a base64-encoded C string into a newly allocated ByteString.
+ * Returns UA_BYTESTRING_NULL if the input is not valid base64. */
+UA_EXPORT UA_ByteString
+UA_BYTESTRING_BASE64(const char *chars);
+
+/* Points to the given C string without copying. The length is derived via
+ * strlen, which silently truncates content at the first embedded zero byte
+ * -- a ByteString is not a C string and may legitimately contain one.
+ * Use UA_BYTESTRING_RAW (length already known) or UA_BYTESTRING_BASE64
+ * (base64-encoded literal) instead. */
+UA_DEPRECATED static UA_INLINE UA_ByteString
+UA_BYTESTRING(char *chars) {
+    return UA_STRING(chars);
+}
+
+/* Deprecated for the same reason as UA_BYTESTRING. Use
+ * UA_BYTESTRING_ALLOC_RAW (length already known) or UA_BYTESTRING_BASE64
+ * (base64-encoded literal) instead. */
+UA_DEPRECATED static UA_INLINE UA_ByteString
+UA_BYTESTRING_ALLOC(const char *chars) {
+    return UA_String_fromChars(chars);
+}
 
 /* Returns a non-cryptographic hash of a bytestring */
 UA_UInt32 UA_EXPORT
