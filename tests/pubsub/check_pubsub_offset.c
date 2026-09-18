@@ -100,7 +100,7 @@ START_TEST(PublisherOffsets) {
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
 
     UA_NodeId byteStringNodeId = UA_NODEID_NUMERIC(1, 60001);
-    UA_ByteString byteStringValue = UA_BYTESTRING("xy");
+    UA_ByteString byteStringValue = UA_BYTESTRING_RAW("xy", sizeof("xy")-1);
     UA_VariableAttributes byteStringAttr = UA_VariableAttributes_default;
     byteStringAttr.dataType = UA_TYPES[UA_TYPES_BYTESTRING].typeId;
     byteStringAttr.valueRank = UA_VALUERANK_SCALAR;

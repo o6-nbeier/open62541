@@ -1837,7 +1837,7 @@ START_TEST(UA_PubSub_EnDecode_RawFixedSizeStrings) {
 
     UA_String stringValue = UA_STRING("abc");
     UA_UInt32 uint32Value = 0x12345678;
-    UA_ByteString byteStringValue = UA_BYTESTRING("xy");
+    UA_ByteString byteStringValue = UA_BYTESTRING_RAW("xy", sizeof("xy")-1);
     UA_UInt16 uint16Value = 0x4321;
 
     UA_DataValue values[4];

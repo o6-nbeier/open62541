@@ -450,7 +450,7 @@ START_TEST(UA_Enum_xml_roundtrip) {
     UA_StatusCode retval = UA_encodeXml(&src, type, &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
     UA_ByteString expected =
-        UA_BYTESTRING("<ApplicationType>Client_1</ApplicationType>");
+        UA_BYTESTRING_RAW("<ApplicationType>Client_1</ApplicationType>", sizeof("<ApplicationType>Client_1</ApplicationType>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     UA_ApplicationType decoded = UA_APPLICATIONTYPE_SERVER;
@@ -857,8 +857,9 @@ START_TEST(UA_XmlElement_xml_roundtrip) {
     UA_StatusCode retval = UA_encodeXml(&src, type, &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
 
-    UA_ByteString expected = UA_BYTESTRING(
-        "<XmlElement><Test><Value>42</Value></Test></XmlElement>");
+    UA_ByteString expected = UA_BYTESTRING_RAW(
+        "<XmlElement><Test><Value>42</Value></Test></XmlElement>", sizeof(
+        "<XmlElement><Test><Value>42</Value></Test></XmlElement>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     UA_XmlElement decoded;
@@ -880,9 +881,11 @@ START_TEST(UA_OptionalStructure_xml_roundtrip) {
     UA_StatusCode retval =
         UA_encodeXml(&src, &xmlOptionalStructureType, &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    UA_ByteString expected = UA_BYTESTRING(
+    UA_ByteString expected = UA_BYTESTRING_RAW(
         "<XmlOptionalStructure><Required>42</Required>"
-        "<Optional>present</Optional></XmlOptionalStructure>");
+        "<Optional>present</Optional></XmlOptionalStructure>", sizeof(
+        "<XmlOptionalStructure><Required>42</Required>"
+        "<Optional>present</Optional></XmlOptionalStructure>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     XmlOptionalStructure decoded = {0};
@@ -898,8 +901,9 @@ START_TEST(UA_OptionalStructure_xml_roundtrip) {
     src.optional = NULL;
     retval = UA_encodeXml(&src, &xmlOptionalStructureType, &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    expected = UA_BYTESTRING(
-        "<XmlOptionalStructure><Required>42</Required></XmlOptionalStructure>");
+    expected = UA_BYTESTRING_RAW(
+        "<XmlOptionalStructure><Required>42</Required></XmlOptionalStructure>", sizeof(
+        "<XmlOptionalStructure><Required>42</Required></XmlOptionalStructure>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
     UA_ByteString_clear(&encoded);
 }
@@ -914,7 +918,7 @@ START_TEST(UA_DefaultStructure_xml_encode) {
         &currency, &UA_TYPES[UA_TYPES_CURRENCYUNITTYPE], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
     UA_ByteString expected =
-        UA_BYTESTRING("<CurrencyUnitType></CurrencyUnitType>");
+        UA_BYTESTRING_RAW("<CurrencyUnitType></CurrencyUnitType>", sizeof("<CurrencyUnitType></CurrencyUnitType>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
     UA_ByteString_clear(&encoded);
 
@@ -923,9 +927,11 @@ START_TEST(UA_DefaultStructure_xml_encode) {
     retval = UA_encodeXml(
         &currency, &UA_TYPES[UA_TYPES_CURRENCYUNITTYPE], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    expected = UA_BYTESTRING(
+    expected = UA_BYTESTRING_RAW(
         "<CurrencyUnitType><AlphabeticCode></AlphabeticCode>"
-        "</CurrencyUnitType>");
+        "</CurrencyUnitType>", sizeof(
+        "<CurrencyUnitType><AlphabeticCode></AlphabeticCode>"
+        "</CurrencyUnitType>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
     UA_ByteString_clear(&encoded);
 
@@ -934,15 +940,16 @@ START_TEST(UA_DefaultStructure_xml_encode) {
     UA_Argument_init(&argument);
     retval = UA_encodeXml(&argument, &UA_TYPES[UA_TYPES_ARGUMENT], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    expected = UA_BYTESTRING("<Argument></Argument>");
+    expected = UA_BYTESTRING_RAW("<Argument></Argument>", sizeof("<Argument></Argument>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
     UA_ByteString_clear(&encoded);
 
     argument.arrayDimensions = (UA_UInt32*)UA_EMPTY_ARRAY_SENTINEL;
     retval = UA_encodeXml(&argument, &UA_TYPES[UA_TYPES_ARGUMENT], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    expected = UA_BYTESTRING(
-        "<Argument><ArrayDimensions></ArrayDimensions></Argument>");
+    expected = UA_BYTESTRING_RAW(
+        "<Argument><ArrayDimensions></ArrayDimensions></Argument>", sizeof(
+        "<Argument><ArrayDimensions></ArrayDimensions></Argument>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
     UA_ByteString_clear(&encoded);
 }
@@ -1181,7 +1188,7 @@ END_TEST
 START_TEST(UA_ByteString_xml_encode) {
     UA_ByteString *src = UA_ByteString_new();
     UA_ByteString_init(src);
-    *src = UA_BYTESTRING_ALLOC("asdfasdf");
+    *src = UA_BYTESTRING_ALLOC_RAW("asdfasdf", sizeof("asdfasdf")-1);
     const UA_DataType *type = &UA_TYPES[UA_TYPES_BYTESTRING];
     size_t size = UA_calcSizeXml((void*)src, type, NULL);
 
@@ -1203,7 +1210,7 @@ END_TEST
 START_TEST(UA_ByteString2_xml_encode) {
     UA_ByteString *src = UA_ByteString_new();
     UA_ByteString_init(src);
-    *src = UA_BYTESTRING_ALLOC("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    *src = UA_BYTESTRING_ALLOC_RAW("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", sizeof("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")-1);
     const UA_DataType *type = &UA_TYPES[UA_TYPES_BYTESTRING];
     size_t size = UA_calcSizeXml((void*)src, type, NULL);
 
@@ -1225,12 +1232,17 @@ END_TEST
 START_TEST(UA_ByteString3_xml_encode) {
     UA_ByteString *src = UA_ByteString_new();
     UA_ByteString_init(src);
-    *src = UA_BYTESTRING_ALLOC("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
+    *src = UA_BYTESTRING_ALLOC_RAW("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
                                "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud "
                                "exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure "
                                "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
                                "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
-                               "mollit anim id est laborum.");
+                               "mollit anim id est laborum.", sizeof("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor "
+                               "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud "
+                               "exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure "
+                               "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+                               "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
+                               "mollit anim id est laborum.")-1);
     const UA_DataType *type = &UA_TYPES[UA_TYPES_BYTESTRING];
     size_t size = UA_calcSizeXml((void*)src, type, NULL);
 
@@ -1697,8 +1709,9 @@ START_TEST(UA_LocalizedText_null_locale_xml_roundtrip) {
     UA_ByteString encoded = UA_BYTESTRING_NULL;
     retval = UA_encodeXml(&out, &UA_TYPES[UA_TYPES_LOCALIZEDTEXT], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    UA_ByteString expected = UA_BYTESTRING(
-        "<LocalizedText><Text>hello</Text></LocalizedText>");
+    UA_ByteString expected = UA_BYTESTRING_RAW(
+        "<LocalizedText><Text>hello</Text></LocalizedText>", sizeof(
+        "<LocalizedText><Text>hello</Text></LocalizedText>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     UA_LocalizedText out2;
@@ -1720,8 +1733,9 @@ START_TEST(UA_LocalizedText_null_locale_xml_roundtrip) {
     ck_assert_ptr_eq(out2.locale.data, (UA_Byte*)UA_EMPTY_ARRAY_SENTINEL);
     retval = UA_encodeXml(&out2, &UA_TYPES[UA_TYPES_LOCALIZEDTEXT], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    expected = UA_BYTESTRING(
-        "<LocalizedText><Locale></Locale><Text>hello</Text></LocalizedText>");
+    expected = UA_BYTESTRING_RAW(
+        "<LocalizedText><Locale></Locale><Text>hello</Text></LocalizedText>", sizeof(
+        "<LocalizedText><Locale></Locale><Text>hello</Text></LocalizedText>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     UA_LocalizedText_clear(&out);
@@ -1748,8 +1762,9 @@ START_TEST(UA_QualifiedName_null_name_xml_roundtrip) {
     UA_ByteString encoded = UA_BYTESTRING_NULL;
     retval = UA_encodeXml(&out, &UA_TYPES[UA_TYPES_QUALIFIEDNAME], &encoded, NULL);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    UA_ByteString expected = UA_BYTESTRING(
-        "<QualifiedName><NamespaceIndex>0</NamespaceIndex></QualifiedName>");
+    UA_ByteString expected = UA_BYTESTRING_RAW(
+        "<QualifiedName><NamespaceIndex>0</NamespaceIndex></QualifiedName>", sizeof(
+        "<QualifiedName><NamespaceIndex>0</NamespaceIndex></QualifiedName>")-1);
     ck_assert(UA_ByteString_equal(&encoded, &expected));
 
     UA_QualifiedName out2;
@@ -1851,7 +1866,7 @@ START_TEST(UA_ExtensionObject_xml_xml_encode) {
     src->encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     src->content.encoded.typeId = UA_NODEID_NUMERIC(2, 1234);
 
-    UA_ByteString b = UA_BYTESTRING_ALLOC("<Elemement></Element>");
+    UA_ByteString b = UA_BYTESTRING_ALLOC_RAW("<Elemement></Element>", sizeof("<Elemement></Element>")-1);
     src->content.encoded.body = b;
 
     const UA_DataType *type = &UA_TYPES[UA_TYPES_EXTENSIONOBJECT];
@@ -1879,7 +1894,7 @@ START_TEST(UA_ExtensionObject_byteString_xml_encode) {
     src->encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     src->content.encoded.typeId = UA_NODEID_NUMERIC(2, 1234);
 
-    UA_ByteString b = UA_BYTESTRING_ALLOC("123456789012345678901234567890");
+    UA_ByteString b = UA_BYTESTRING_ALLOC_RAW("123456789012345678901234567890", sizeof("123456789012345678901234567890")-1);
     src->content.encoded.body = b;
 
     const UA_DataType *type = &UA_TYPES[UA_TYPES_EXTENSIONOBJECT];
@@ -1964,7 +1979,7 @@ START_TEST(UA_ExtensionObject_print_xml_encode) {
     src->encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     src->content.encoded.typeId = UA_NODEID_NUMERIC(2, 1234);
 
-    UA_ByteString b = UA_BYTESTRING_ALLOC("123456789012345678901234567890");
+    UA_ByteString b = UA_BYTESTRING_ALLOC_RAW("123456789012345678901234567890", sizeof("123456789012345678901234567890")-1);
     src->content.encoded.body = b;
 
     UA_EncodeXmlOptions options;
@@ -2151,19 +2166,19 @@ START_TEST(UA_Array_Variant_ExtensionObject_ByteString_xml_encode) {
     UA_ExtensionObject_init(&eo1);
     eo1.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo1.content.encoded.typeId = UA_NODEID_NUMERIC(2, 1234);
-    eo1.content.encoded.body = UA_BYTESTRING_ALLOC("123456789012345678901234567890");
+    eo1.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("123456789012345678901234567890", sizeof("123456789012345678901234567890")-1);
 
     UA_ExtensionObject eo2;
     UA_ExtensionObject_init(&eo2);
     eo2.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo2.content.encoded.typeId = UA_NODEID_NUMERIC(3, 5678);
-    eo2.content.encoded.body = UA_BYTESTRING_ALLOC("98765432109876543210987654321");
+    eo2.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("98765432109876543210987654321", sizeof("98765432109876543210987654321")-1);
 
     UA_ExtensionObject eo3;
     UA_ExtensionObject_init(&eo3);
     eo3.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo3.content.encoded.typeId = UA_NODEID_NUMERIC(4, 9999);
-    eo3.content.encoded.body = UA_BYTESTRING_ALLOC("1357911131517192123252729");
+    eo3.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("1357911131517192123252729", sizeof("1357911131517192123252729")-1);
 
     UA_Variant *src = UA_Variant_new();
     UA_Variant_init(src);
@@ -2225,53 +2240,81 @@ START_TEST(UA_Array_Variant_ExtensionObject_Xml_xml_encode) {
     UA_ExtensionObject_init(&eo1);
     eo1.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     eo1.content.encoded.typeId = UA_NODEID_NUMERIC(0, 297);
-    eo1.content.encoded.body = UA_BYTESTRING_ALLOC("<Argument>"
+    eo1.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("<Argument>"
                                                      "<Name>ObjectToMoveOrCopy</Name>"
                                                      "<DataType>"
                                                        "<Identifier>i=17</Identifier>"
                                                      "</DataType>"
                                                      "<ValueRank>-1</ValueRank>"
                                                      "<ArrayDimensions />"
-                                                   "</Argument>");
+                                                   "</Argument>", sizeof("<Argument>"
+                                                     "<Name>ObjectToMoveOrCopy</Name>"
+                                                     "<DataType>"
+                                                       "<Identifier>i=17</Identifier>"
+                                                     "</DataType>"
+                                                     "<ValueRank>-1</ValueRank>"
+                                                     "<ArrayDimensions />"
+                                                   "</Argument>")-1);
 
     UA_ExtensionObject eo2;
     UA_ExtensionObject_init(&eo2);
     eo2.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     eo2.content.encoded.typeId = UA_NODEID_NUMERIC(0, 297);
-    eo2.content.encoded.body = UA_BYTESTRING_ALLOC("<Argument>"
+    eo2.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("<Argument>"
                                                      "<Name>TargetDirectory</Name>"
                                                      "<DataType>"
                                                        "<Identifier>i=17</Identifier>"
                                                      "</DataType>"
                                                      "<ValueRank>-1</ValueRank>"
                                                      "<ArrayDimensions />"
-                                                   "</Argument>");
+                                                   "</Argument>", sizeof("<Argument>"
+                                                     "<Name>TargetDirectory</Name>"
+                                                     "<DataType>"
+                                                       "<Identifier>i=17</Identifier>"
+                                                     "</DataType>"
+                                                     "<ValueRank>-1</ValueRank>"
+                                                     "<ArrayDimensions />"
+                                                   "</Argument>")-1);
 
     UA_ExtensionObject eo3;
     UA_ExtensionObject_init(&eo3);
     eo3.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     eo3.content.encoded.typeId = UA_NODEID_NUMERIC(0, 297);
-    eo3.content.encoded.body = UA_BYTESTRING_ALLOC("<Argument>"
+    eo3.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("<Argument>"
                                                      "<Name>CreateCopy</Name>"
                                                      "<DataType>"
                                                        "<Identifier>i=1</Identifier>"
                                                      "</DataType>"
                                                      "<ValueRank>-1</ValueRank>"
                                                      "<ArrayDimensions />"
-                                                   "</Argument>");
+                                                   "</Argument>", sizeof("<Argument>"
+                                                     "<Name>CreateCopy</Name>"
+                                                     "<DataType>"
+                                                       "<Identifier>i=1</Identifier>"
+                                                     "</DataType>"
+                                                     "<ValueRank>-1</ValueRank>"
+                                                     "<ArrayDimensions />"
+                                                   "</Argument>")-1);
 
     UA_ExtensionObject eo4;
     UA_ExtensionObject_init(&eo4);
     eo4.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     eo4.content.encoded.typeId = UA_NODEID_NUMERIC(0, 297);
-    eo4.content.encoded.body = UA_BYTESTRING_ALLOC("<Argument>"
+    eo4.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("<Argument>"
                                                      "<Name>NewName</Name>"
                                                      "<DataType>"
                                                        "<Identifier>i=12</Identifier>"
                                                      "</DataType>"
                                                      "<ValueRank>-1</ValueRank>"
                                                      "<ArrayDimensions />"
-                                                   "</Argument>");
+                                                   "</Argument>", sizeof("<Argument>"
+                                                     "<Name>NewName</Name>"
+                                                     "<DataType>"
+                                                       "<Identifier>i=12</Identifier>"
+                                                     "</DataType>"
+                                                     "<ValueRank>-1</ValueRank>"
+                                                     "<ArrayDimensions />"
+                                                   "</Argument>")-1);
 
     UA_Variant *src = UA_Variant_new();
     UA_Variant_init(src);
@@ -2370,13 +2413,13 @@ START_TEST(UA_Array_Variant_ExtensionObject_print_xml_encode) {
     UA_ExtensionObject_init(&eo1);
     eo1.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo1.content.encoded.typeId = UA_NODEID_NUMERIC(2, 1234);
-    eo1.content.encoded.body = UA_BYTESTRING_ALLOC("123456789012345678901234567890");
+    eo1.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("123456789012345678901234567890", sizeof("123456789012345678901234567890")-1);
 
     UA_ExtensionObject eo2;
     UA_ExtensionObject_init(&eo2);
     eo2.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo2.content.encoded.typeId = UA_NODEID_NUMERIC(3, 5678);
-    eo2.content.encoded.body = UA_BYTESTRING_ALLOC("98765432109876543210987654321");
+    eo2.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("98765432109876543210987654321", sizeof("98765432109876543210987654321")-1);
 
     UA_Variant *src = UA_Variant_new();
     UA_Variant_init(src);
@@ -3513,7 +3556,7 @@ START_TEST(UA_ByteString_whitespace_xml_decode) {
         UA_decodeXml(&buf, &out, &UA_TYPES[UA_TYPES_BYTESTRING], NULL);
 
     ck_assert_int_eq(retval, UA_STATUSCODE_GOOD);
-    UA_ByteString expected = UA_BYTESTRING("asdfasdf");
+    UA_ByteString expected = UA_BYTESTRING_RAW("asdfasdf", sizeof("asdfasdf")-1);
     ck_assert(UA_ByteString_equal(&out, &expected));
     UA_ByteString_clear(&out);
 }

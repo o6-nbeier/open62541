@@ -52,13 +52,13 @@ exercisePolicy(PolicyInit init) {
     UA_ByteString originalCertificate = UA_BYTESTRING_NULL;
     rv = UA_ByteString_copy(&policy.localCertificate, &originalCertificate);
     ck_assert_int_eq(rv, UA_STATUSCODE_GOOD);
-    UA_ByteString invalidCertificate = UA_BYTESTRING("not a certificate");
+    UA_ByteString invalidCertificate = UA_BYTESTRING_RAW("not a certificate", sizeof("not a certificate")-1);
     rv = policy.updateCertificate(&policy, invalidCertificate, key);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
     ck_assert_ptr_ne(policy.policyContext, NULL);
     ck_assert(UA_ByteString_equal(&policy.localCertificate,
                                   &originalCertificate));
-    UA_ByteString invalidKey = UA_BYTESTRING("not a private key");
+    UA_ByteString invalidKey = UA_BYTESTRING_RAW("not a private key", sizeof("not a private key")-1);
     rv = policy.updateCertificate(&policy, cert, invalidKey);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
     ck_assert_ptr_ne(policy.policyContext, NULL);
@@ -75,7 +75,7 @@ exercisePolicy(PolicyInit init) {
 
     /* newChannelContext with an invalid certificate must fail */
     void *badcc = NULL;
-    UA_ByteString badCert = UA_BYTESTRING("not a certificate");
+    UA_ByteString badCert = UA_BYTESTRING_RAW("not a certificate", sizeof("not a certificate")-1);
     rv = policy.newChannelContext(&policy, &badCert, &badcc);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
 
@@ -88,7 +88,7 @@ exercisePolicy(PolicyInit init) {
     /* ---- Asymmetric signature round trip ---- */
     const UA_SecurityPolicySignatureAlgorithm *asymSig =
         &policy.asymSignatureAlgorithm;
-    UA_ByteString msg = UA_BYTESTRING("The quick brown fox jumps over the lazy dog");
+    UA_ByteString msg = UA_BYTESTRING_RAW("The quick brown fox jumps over the lazy dog", sizeof("The quick brown fox jumps over the lazy dog")-1);
 
     size_t localSigSize = asymSig->getLocalSignatureSize(&policy, cc);
     ck_assert_uint_gt(localSigSize, 0);
@@ -149,7 +149,7 @@ exercisePolicy(PolicyInit init) {
     UA_ByteString_clear(&edata);
 
     /* Decrypt of a non-block-aligned buffer must fail */
-    UA_ByteString bad = UA_BYTESTRING("12345");
+    UA_ByteString bad = UA_BYTESTRING_RAW("12345", sizeof("12345")-1);
     rv = asymEnc->decrypt(&policy, cc, &bad);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
 
@@ -224,8 +224,8 @@ exercisePolicy(PolicyInit init) {
     UA_ByteString_clear(&iv);
 
     /* ---- generateKey ---- */
-    UA_ByteString secret = UA_BYTESTRING("0123456789abcdef0123456789abcdef");
-    UA_ByteString seed = UA_BYTESTRING("fedcba9876543210fedcba9876543210");
+    UA_ByteString secret = UA_BYTESTRING_RAW("0123456789abcdef0123456789abcdef", sizeof("0123456789abcdef0123456789abcdef")-1);
+    UA_ByteString seed = UA_BYTESTRING_RAW("fedcba9876543210fedcba9876543210", sizeof("fedcba9876543210fedcba9876543210")-1);
     UA_ByteString derived;
     UA_ByteString_allocBuffer(&derived, 64);
     rv = policy.generateKey(&policy, cc, &secret, &seed, &derived);

@@ -100,7 +100,7 @@ static void setup(void) {
 
     /* ByteString variable */
     UA_VariableAttributes bsattr = UA_VariableAttributes_default;
-    UA_ByteString bsval = UA_BYTESTRING("binarydata");
+    UA_ByteString bsval = UA_BYTESTRING_RAW("binarydata", sizeof("binarydata")-1);
     UA_Variant_setScalar(&bsattr.value, &bsval, &UA_TYPES[UA_TYPES_BYTESTRING]);
     bsattr.dataType = UA_TYPES[UA_TYPES_BYTESTRING].typeId;
     bsattr.accessLevel = UA_ACCESSLEVELMASK_READ | UA_ACCESSLEVELMASK_WRITE;

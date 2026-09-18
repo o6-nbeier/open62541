@@ -237,7 +237,7 @@ START_TEST(get_extended_key_usage) {
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
     ck_assert_uint_eq(eku, UA_CERTIFICATEEKU_NONE);
 
-    UA_ByteString invalid = UA_BYTESTRING("not a certificate");
+    UA_ByteString invalid = UA_BYTESTRING_RAW("not a certificate", sizeof("not a certificate")-1);
     eku = UA_CERTIFICATEEKU_OTHER;
     retval = UA_CertificateUtils_getExtendedKeyUsage(&invalid, &eku);
     ck_assert_uint_ne(retval, UA_STATUSCODE_GOOD);

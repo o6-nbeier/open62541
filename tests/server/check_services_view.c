@@ -627,7 +627,7 @@ START_TEST(View_BrowseNextUnknownContinuationPoint) {
     UA_Server *server = UA_Server_newForUnitTest();
     ck_assert_msg(server != NULL, "expected server to be non-NULL");
 
-    UA_ByteString badCp = UA_BYTESTRING_ALLOC("not-a-real-continuation-point");
+    UA_ByteString badCp = UA_BYTESTRING_ALLOC_RAW("not-a-real-continuation-point", sizeof("not-a-real-continuation-point")-1);
     UA_BrowseResult br = UA_Server_browseNext(server, false, &badCp);
     ck_assert_int_eq(br.statusCode, UA_STATUSCODE_BADCONTINUATIONPOINTINVALID);
     UA_BrowseResult_clear(&br);

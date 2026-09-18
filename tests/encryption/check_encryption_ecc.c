@@ -650,13 +650,13 @@ START_TEST(encryption_update_certificate) {
     UA_ByteString originalCertificate = UA_BYTESTRING_NULL;
     retval = UA_ByteString_copy(&sp->localCertificate, &originalCertificate);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
-    UA_ByteString invalidCertificate = UA_BYTESTRING("not a certificate");
+    UA_ByteString invalidCertificate = UA_BYTESTRING_RAW("not a certificate", sizeof("not a certificate")-1);
     retval = sp->updateCertificate(sp, invalidCertificate, privateKey);
     ck_assert_uint_ne(retval, UA_STATUSCODE_GOOD);
     ck_assert_ptr_ne(sp->policyContext, NULL);
     ck_assert(UA_ByteString_equal(&sp->localCertificate,
                                   &originalCertificate));
-    UA_ByteString invalidPrivateKey = UA_BYTESTRING("not a private key");
+    UA_ByteString invalidPrivateKey = UA_BYTESTRING_RAW("not a private key", sizeof("not a private key")-1);
     retval = sp->updateCertificate(sp, certificate, invalidPrivateKey);
     ck_assert_uint_ne(retval, UA_STATUSCODE_GOOD);
     ck_assert_ptr_ne(sp->policyContext, NULL);

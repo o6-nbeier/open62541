@@ -10,7 +10,7 @@
 #include <check.h>
 
 START_TEST(base64) {
-    UA_ByteString test1 = UA_BYTESTRING("abc123\nopen62541");
+    UA_ByteString test1 = UA_BYTESTRING_RAW("abc123\nopen62541", sizeof("abc123\nopen62541")-1);
     UA_String test1base64;
     UA_StatusCode res = UA_ByteString_toBase64(&test1, &test1base64);
     ck_assert_int_eq(res, UA_STATUSCODE_GOOD);
@@ -27,7 +27,7 @@ START_TEST(base64) {
     UA_ByteString_clear(&test1out);
     UA_ByteString_clear(&test1out);
 
-    UA_ByteString test2 = UA_BYTESTRING("");
+    UA_ByteString test2 = UA_BYTESTRING_RAW("", sizeof("")-1);
     UA_String test2base64;
     res = UA_ByteString_toBase64(&test2, &test2base64);
     ck_assert_int_eq(res, UA_STATUSCODE_GOOD);
@@ -108,7 +108,7 @@ START_TEST(parseNodeIdByteString) {
     UA_NodeId id = UA_NODEID("ns=1;b=b3BlbjYyNTQxIQ==");
     ck_assert_int_eq(id.identifierType, UA_NODEIDTYPE_BYTESTRING);
     ck_assert_int_eq(id.namespaceIndex, 1);
-    UA_ByteString bstrid = UA_BYTESTRING("open62541!");
+    UA_ByteString bstrid = UA_BYTESTRING_RAW("open62541!", sizeof("open62541!")-1);
     ck_assert(UA_ByteString_equal(&id.identifier.byteString, &bstrid));
     UA_NodeId_clear(&id);
 } END_TEST

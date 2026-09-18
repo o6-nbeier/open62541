@@ -50,7 +50,7 @@ exercisePubSubPolicy(PubSubPolicyInit init) {
     for(size_t i = 0; i < keyNonce.length; i++) keyNonce.data[i] = (UA_Byte)(i + 5);
 
     /* setSecurityKeys with wrong-length keys must fail */
-    UA_ByteString shortKey = UA_BYTESTRING("short");
+    UA_ByteString shortKey = UA_BYTESTRING_RAW("short", sizeof("short")-1);
     rv = policy.setSecurityKeys(&policy, ctx, &shortKey, &encKey, &keyNonce);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
 
@@ -78,7 +78,7 @@ exercisePubSubPolicy(PubSubPolicyInit init) {
     ck_assert_int_eq(rv, UA_STATUSCODE_GOOD);
 
     /* ---- Signature round trip ---- */
-    UA_ByteString msg = UA_BYTESTRING("PubSub network message payload bytes");
+    UA_ByteString msg = UA_BYTESTRING_RAW("PubSub network message payload bytes", sizeof("PubSub network message payload bytes")-1);
     size_t sigSize = policy.getSignatureSize(&policy, ctx);
     ck_assert_uint_gt(sigSize, 0);
     UA_ByteString sig;
@@ -92,7 +92,7 @@ exercisePubSubPolicy(PubSubPolicyInit init) {
     rv = policy.verify(&policy, ctx, &msg, &sig);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
     /* Wrong signature length is rejected */
-    UA_ByteString badSig = UA_BYTESTRING("tooshort");
+    UA_ByteString badSig = UA_BYTESTRING_RAW("tooshort", sizeof("tooshort")-1);
     rv = policy.verify(&policy, ctx, &msg, &badSig);
     ck_assert_int_ne(rv, UA_STATUSCODE_GOOD);
     rv = policy.sign(&policy, ctx, &msg, &badSig);
@@ -123,8 +123,8 @@ exercisePubSubPolicy(PubSubPolicyInit init) {
     UA_ByteString_clear(&plain);
 
     /* ---- generateKey ---- */
-    UA_ByteString secret = UA_BYTESTRING("0123456789abcdef0123456789abcdef");
-    UA_ByteString seed = UA_BYTESTRING("fedcba9876543210fedcba9876543210");
+    UA_ByteString secret = UA_BYTESTRING_RAW("0123456789abcdef0123456789abcdef", sizeof("0123456789abcdef0123456789abcdef")-1);
+    UA_ByteString seed = UA_BYTESTRING_RAW("fedcba9876543210fedcba9876543210", sizeof("fedcba9876543210fedcba9876543210")-1);
     UA_ByteString derived;
     UA_ByteString_allocBuffer(&derived, signKeyLen + encKeyLen + KEYNONCE_LENGTH);
     rv = policy.generateKey(&policy, ctx, &secret, &seed, &derived);

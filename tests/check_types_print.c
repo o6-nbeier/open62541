@@ -240,7 +240,7 @@ START_TEST(print_extensionobject) {
     UA_ExtensionObject_init(&eo);
     eo.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo.content.encoded.typeId = UA_NODEID_NUMERIC(0, 999);
-    eo.content.encoded.body = UA_BYTESTRING("test");
+    eo.content.encoded.body = UA_BYTESTRING_RAW("test", sizeof("test")-1);
 
     UA_String out = UA_STRING_NULL;
     UA_StatusCode res = UA_print(&eo, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT], &out);
@@ -352,8 +352,8 @@ START_TEST(order_extensionobject) {
 } END_TEST
 
 START_TEST(order_bytestring) {
-    UA_ByteString b1 = UA_BYTESTRING("aaa");
-    UA_ByteString b2 = UA_BYTESTRING("bbb");
+    UA_ByteString b1 = UA_BYTESTRING_RAW("aaa", sizeof("aaa")-1);
+    UA_ByteString b2 = UA_BYTESTRING_RAW("bbb", sizeof("bbb")-1);
     UA_Order o = UA_order(&b1, &b2, &UA_TYPES[UA_TYPES_BYTESTRING]);
     ck_assert_int_eq(o, UA_ORDER_LESS);
 } END_TEST

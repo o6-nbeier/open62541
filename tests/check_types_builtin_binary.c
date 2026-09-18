@@ -192,7 +192,7 @@ START_TEST(binary_guid) {
 
 /* ========== ByteString ========== */
 START_TEST(binary_bytestring_empty) {
-    UA_ByteString src = UA_BYTESTRING(""), dst;
+    UA_ByteString src = UA_BYTESTRING_RAW("", sizeof("")-1), dst;
     UA_ByteString_init(&dst);
     ck_assert_uint_eq(roundtripBinary(&src, &UA_TYPES[UA_TYPES_BYTESTRING], &dst),
                       UA_STATUSCODE_GOOD);
@@ -236,7 +236,7 @@ START_TEST(binary_nodeid_bytestring) {
     UA_NodeId src;
     src.identifierType = UA_NODEIDTYPE_BYTESTRING;
     src.namespaceIndex = 3;
-    src.identifier.byteString = UA_BYTESTRING("testbs");
+    src.identifier.byteString = UA_BYTESTRING_RAW("testbs", sizeof("testbs")-1);
     UA_NodeId dst;
     UA_NodeId_init(&dst);
     ck_assert_uint_eq(roundtripBinary(&src, &UA_TYPES[UA_TYPES_NODEID], &dst),
@@ -513,7 +513,7 @@ START_TEST(binary_extensionobject_bytestring) {
     UA_ExtensionObject_init(&dst);
     src.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     src.content.encoded.typeId = UA_NODEID_NUMERIC(0, 999);
-    src.content.encoded.body = UA_BYTESTRING("binarydata");
+    src.content.encoded.body = UA_BYTESTRING_RAW("binarydata", sizeof("binarydata")-1);
     ck_assert_uint_eq(roundtripBinary(&src, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT], &dst),
                       UA_STATUSCODE_GOOD);
     ck_assert_uint_eq(dst.encoding, UA_EXTENSIONOBJECT_ENCODED_BYTESTRING);
@@ -526,7 +526,7 @@ START_TEST(binary_extensionobject_xml) {
     UA_ExtensionObject_init(&dst);
     src.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     src.content.encoded.typeId = UA_NODEID_NUMERIC(0, 888);
-    src.content.encoded.body = UA_BYTESTRING("<test>xml</test>");
+    src.content.encoded.body = UA_BYTESTRING_RAW("<test>xml</test>", sizeof("<test>xml</test>")-1);
     ck_assert_uint_eq(roundtripBinary(&src, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT], &dst),
                       UA_STATUSCODE_GOOD);
     ck_assert_uint_eq(dst.encoding, UA_EXTENSIONOBJECT_ENCODED_XML);
@@ -690,7 +690,7 @@ START_TEST(binary_find_datatype_by_binary) {
 
 /* ========== Encode/decode with truncated buffer ========== */
 START_TEST(binary_decode_truncated) {
-    UA_ByteString buf = UA_BYTESTRING("\x01"); /* too short for Int32 */
+    UA_ByteString buf = UA_BYTESTRING_RAW("\x01", sizeof("\x01")-1); /* too short for Int32 */
     UA_Int32 dst = 0;
     UA_StatusCode res = UA_decodeBinary(&buf, &dst, &UA_TYPES[UA_TYPES_INT32], NULL);
     ck_assert(res != UA_STATUSCODE_GOOD);

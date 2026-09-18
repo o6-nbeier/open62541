@@ -387,7 +387,7 @@ START_TEST(AddVariableNode_ExtensionObject) {
         UA_ExtensionObject_init(&myExtensionObject);
         myExtensionObject.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
         myExtensionObject.content.encoded.typeId = UA_NODEID_NUMERIC(5, 1234);
-        UA_ByteString byteString = UA_BYTESTRING("String Payload as a ByteString extension");
+        UA_ByteString byteString = UA_BYTESTRING_RAW("String Payload as a ByteString extension", sizeof("String Payload as a ByteString extension")-1);
         myExtensionObject.content.encoded.body = byteString;
         UA_Variant_setScalar(&attr.value, &myExtensionObject, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT]);
 

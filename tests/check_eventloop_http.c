@@ -226,7 +226,7 @@ START_TEST(sendPostRequest) {
 
     for(int i = 0; i < COUNT; i++) {
         requestHandle = (UA_UInt32)i;
-        UA_ByteString msg = UA_BYTESTRING_ALLOC("text=hallo&send=data");
+        UA_ByteString msg = UA_BYTESTRING_ALLOC_RAW("text=hallo&send=data", sizeof("text=hallo&send=data")-1);
         res = cm->sendWithConnection(cm, connectionId, &sendKvm, &msg);
         ck_assert(res == UA_STATUSCODE_GOOD);
     }
@@ -337,7 +337,7 @@ serverConnectionCallback(UA_ConnectionManager *cm, uintptr_t connectionId,
         UA_Variant_setArray(&responseParameters[1].value, headers, 1,
                             &UA_TYPES[UA_TYPES_KEYVALUEPAIR]);
         UA_KeyValueMap responseMap = {2, responseParameters};
-        UA_ByteString response = UA_BYTESTRING_ALLOC("binary-response");
+        UA_ByteString response = UA_BYTESTRING_ALLOC_RAW("binary-response", sizeof("binary-response")-1);
         ck_assert_uint_eq(cm->sendWithConnection(cm, connectionId, &responseMap,
                                                  &response), UA_STATUSCODE_GOOD);
         return;
@@ -591,7 +591,7 @@ advancedHTTPCallback(UA_ConnectionManager *cm, uintptr_t connectionId,
         if(ctx->mode == HTTP_TEST_CLOSE_CONNECTION) {
             ck_assert_uint_eq(cm->closeConnection(cm, connectionId),
                               UA_STATUSCODE_GOOD);
-            UA_ByteString late = UA_BYTESTRING_ALLOC("late");
+            UA_ByteString late = UA_BYTESTRING_ALLOC_RAW("late", sizeof("late")-1);
             ctx->sendAfterCloseStatus = cm->sendWithConnection(
                 cm, connectionId, &UA_KEYVALUEMAP_NULL, &late);
             ck_assert_ptr_null(late.data);
@@ -639,7 +639,7 @@ advancedHTTPCallback(UA_ConnectionManager *cm, uintptr_t connectionId,
         ctx->firstSendStatus = cm->sendWithConnection(
             cm, connectionId, &responseMap, &response);
         if(ctx->mode == HTTP_TEST_DUPLICATE_RESPONSE) {
-            UA_ByteString duplicate = UA_BYTESTRING_ALLOC("duplicate");
+            UA_ByteString duplicate = UA_BYTESTRING_ALLOC_RAW("duplicate", sizeof("duplicate")-1);
             ctx->secondSendStatus = cm->sendWithConnection(
                 cm, connectionId, &responseMap, &duplicate);
             ck_assert_ptr_null(duplicate.data);
@@ -1209,7 +1209,7 @@ START_TEST(clientRequestTimeoutIsolation) {
     UA_Variant_setScalar(&responseParam.value, &statusCode,
                          &UA_TYPES[UA_TYPES_UINT16]);
     UA_KeyValueMap responseMap = {1, &responseParam};
-    UA_ByteString late = UA_BYTESTRING_ALLOC("late");
+    UA_ByteString late = UA_BYTESTRING_ALLOC_RAW("late", sizeof("late")-1);
     UA_StatusCode lateStatus = cm->sendWithConnection(
         cm, ctx.stalledConnectionId, &responseMap, &late);
     ck_assert(lateStatus == UA_STATUSCODE_GOOD ||
@@ -1741,7 +1741,7 @@ START_TEST(messageSizeLimits) {
     ck_assert_uint_eq(eventLoop->start(eventLoop), UA_STATUSCODE_GOOD);
     openHTTPListener(cm, &ctx, 30, 4, 0, false, NULL, NULL, NULL);
     openHTTPClient(cm, &ctx, 0, 4, false, NULL, NULL, NULL);
-    UA_ByteString tooLarge = UA_BYTESTRING_ALLOC("12345");
+    UA_ByteString tooLarge = UA_BYTESTRING_ALLOC_RAW("12345", sizeof("12345")-1);
     ck_assert_uint_eq(cm->sendWithConnection(cm, ctx.clientId,
                                              &UA_KEYVALUEMAP_NULL, &tooLarge),
                       UA_STATUSCODE_BADREQUESTTOOLARGE);
@@ -1853,7 +1853,7 @@ START_TEST(parameterValidation) {
     const char *oldByteStringParameters[] = {
         "ca-cert", "client-cert", "client-key"
     };
-    UA_ByteString oldByteStringValue = UA_BYTESTRING("unused");
+    UA_ByteString oldByteStringValue = UA_BYTESTRING_RAW("unused", sizeof("unused")-1);
     for(size_t i = 0; i < 3; i++) {
         parameters[3].key = UA_QUALIFIEDNAME(
             0, (char*)(uintptr_t)oldByteStringParameters[i]);
@@ -1870,7 +1870,7 @@ START_TEST(parameterValidation) {
     UA_Variant_setScalar(&oldSendParameter.value, &oldHeader,
                          &UA_TYPES[UA_TYPES_STRING]);
     UA_KeyValueMap oldSendMap = {1, &oldSendParameter};
-    UA_ByteString body = UA_BYTESTRING_ALLOC("consumed");
+    UA_ByteString body = UA_BYTESTRING_ALLOC_RAW("consumed", sizeof("consumed")-1);
     ck_assert_uint_ne(cm->sendWithConnection(cm, 1, &oldSendMap, &body),
                       UA_STATUSCODE_GOOD);
     ck_assert_ptr_null(body.data);

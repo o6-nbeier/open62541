@@ -569,7 +569,7 @@ START_TEST(extObj_encoding_differ) {
     /* a is NOBODY (0), b is ENCODED_BYTESTRING (1) */
     b.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     b.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
-    b.content.encoded.body = UA_BYTESTRING("data");
+    b.content.encoded.body = UA_BYTESTRING_RAW("data", sizeof("data")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT]), UA_ORDER_LESS);
 } END_TEST
 
@@ -581,8 +581,8 @@ START_TEST(extObj_encoded_bytestring_differ) {
     b.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     a.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
     b.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
-    a.content.encoded.body = UA_BYTESTRING("aaa");
-    b.content.encoded.body = UA_BYTESTRING("zzz");
+    a.content.encoded.body = UA_BYTESTRING_RAW("aaa", sizeof("aaa")-1);
+    b.content.encoded.body = UA_BYTESTRING_RAW("zzz", sizeof("zzz")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT]), UA_ORDER_LESS);
 } END_TEST
 
@@ -594,8 +594,8 @@ START_TEST(extObj_encoded_typeId_differ) {
     b.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     a.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
     b.content.encoded.typeId = UA_NODEID_NUMERIC(0, 2);
-    a.content.encoded.body = UA_BYTESTRING("x");
-    b.content.encoded.body = UA_BYTESTRING("x");
+    a.content.encoded.body = UA_BYTESTRING_RAW("x", sizeof("x")-1);
+    b.content.encoded.body = UA_BYTESTRING_RAW("x", sizeof("x")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT]), UA_ORDER_LESS);
 } END_TEST
 
@@ -607,8 +607,8 @@ START_TEST(extObj_encoded_xml) {
     b.encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     a.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
     b.content.encoded.typeId = UA_NODEID_NUMERIC(0, 1);
-    a.content.encoded.body = UA_BYTESTRING("<a/>");
-    b.content.encoded.body = UA_BYTESTRING("<b/>");
+    a.content.encoded.body = UA_BYTESTRING_RAW("<a/>", sizeof("<a/>")-1);
+    b.content.encoded.body = UA_BYTESTRING_RAW("<b/>", sizeof("<b/>")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT]), UA_ORDER_LESS);
 } END_TEST
 

@@ -252,7 +252,7 @@ START_TEST(decrypt_private_key_with_password) {
     UA_ByteString key;
     key.length = KEY_PEM_PASSWORD_LENGTH;
     key.data = KEY_PEM_PASSWORD_DATA;
-    UA_ByteString password = UA_BYTESTRING("pass1234");
+    UA_ByteString password = UA_BYTESTRING_RAW("pass1234", sizeof("pass1234")-1);
     UA_ByteString outDerKey = UA_BYTESTRING_NULL;
     UA_StatusCode retval = UA_CertificateUtils_decryptPrivateKey(key, password, &outDerKey);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);
@@ -320,7 +320,7 @@ END_TEST
 #ifdef UA_ENABLE_ENCRYPTION_MBEDTLS
 START_TEST(certificate_utils_reject_invalid_arguments) {
     UA_ByteString invalid = {1, NULL};
-    UA_ByteString malformed = UA_BYTESTRING("not-a-certificate");
+    UA_ByteString malformed = UA_BYTESTRING_RAW("not-a-certificate", sizeof("not-a-certificate")-1);
     UA_ByteString cert = {CERT_DER_LENGTH, CERT_DER_DATA};
     UA_String uri = UA_STRING("urn:test");
     UA_DateTime expiry = 0;
@@ -483,7 +483,7 @@ START_TEST(policy_none_channel_context) {
     UA_ByteString_clear(&out);
 
     /* Symmetric sign/verify/encrypt/decrypt */
-    UA_ByteString msg = UA_BYTESTRING("test message");
+    UA_ByteString msg = UA_BYTESTRING_RAW("test message", sizeof("test message")-1);
     UA_ByteString sig = UA_BYTESTRING_NULL;
     retval = sp.symSignatureAlgorithm.sign(&sp, ctx, &msg, &sig);
     ck_assert_uint_eq(retval, UA_STATUSCODE_GOOD);

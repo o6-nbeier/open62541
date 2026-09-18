@@ -196,7 +196,7 @@ START_TEST(aesgcm_connect_username) {
     UA_UserNameIdentityToken *u = UA_UserNameIdentityToken_new();
     ck_assert(u != NULL);
     u->userName = UA_STRING_ALLOC("user1");
-    u->password = UA_BYTESTRING_ALLOC("password");
+    u->password = UA_BYTESTRING_ALLOC_RAW("password", sizeof("password")-1);
     UA_ExtensionObject_clear(&cc->userIdentityToken);
     UA_ExtensionObject_setValue(&cc->userIdentityToken, u,
                                 &UA_TYPES[UA_TYPES_USERNAMEIDENTITYTOKEN]);

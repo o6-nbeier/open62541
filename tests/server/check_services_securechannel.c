@@ -167,7 +167,7 @@ START_TEST(OpenSecureChannel_renew_nonceReuse_rejected) {
      * SecurityTokenRequestType is ISSUE in setSecurityMode -- here we
      * deliberately bypass that by manually setting the mode. */
     ch.securityMode = UA_MESSAGESECURITYMODE_SIGN;
-    ch.remoteNonce = UA_BYTESTRING_ALLOC("0123456789ABCDEF");
+    ch.remoteNonce = UA_BYTESTRING_ALLOC_RAW("0123456789ABCDEF", sizeof("0123456789ABCDEF")-1);
 
     UA_OpenSecureChannelRequest req;
     UA_OpenSecureChannelRequest_init(&req);

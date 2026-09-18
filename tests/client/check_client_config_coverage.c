@@ -73,7 +73,7 @@ START_TEST(ClientConfig_setAuthenticationUsername_basic) {
         cfg->userIdentityToken.content.decoded.data;
     ck_assert_ptr_ne(token, NULL);
     UA_String expectedName = UA_STRING("alice");
-    UA_ByteString expectedPw = UA_BYTESTRING("secret");
+    UA_ByteString expectedPw = UA_BYTESTRING_RAW("secret", sizeof("secret")-1);
     ck_assert(UA_String_equal(&token->userName, &expectedName));
     ck_assert(UA_ByteString_equal(&token->password, &expectedPw));
 
@@ -95,7 +95,7 @@ START_TEST(ClientConfig_setAuthenticationUsername_replaces) {
     UA_UserNameIdentityToken *token = (UA_UserNameIdentityToken *)
         cfg->userIdentityToken.content.decoded.data;
     UA_String expectedName = UA_STRING("second");
-    UA_ByteString expectedPw = UA_BYTESTRING("pw2");
+    UA_ByteString expectedPw = UA_BYTESTRING_RAW("pw2", sizeof("pw2")-1);
     ck_assert(UA_String_equal(&token->userName, &expectedName));
     ck_assert(UA_ByteString_equal(&token->password, &expectedPw));
 

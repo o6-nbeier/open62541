@@ -907,12 +907,12 @@ START_TEST(TrustListDataType_contains) {
     UA_TrustListDataType_init(&trustList);
 
     /* Create test data for each trust list category */
-    UA_ByteString cert1 = UA_BYTESTRING("certificate1");
-    UA_ByteString cert2 = UA_BYTESTRING("certificate2");
-    UA_ByteString crl1 = UA_BYTESTRING("crl1");
-    UA_ByteString issuerCert1 = UA_BYTESTRING("issuerCert1");
-    UA_ByteString issuerCrl1 = UA_BYTESTRING("issuerCrl1");
-    UA_ByteString notInList = UA_BYTESTRING("notInList");
+    UA_ByteString cert1 = UA_BYTESTRING_RAW("certificate1", sizeof("certificate1")-1);
+    UA_ByteString cert2 = UA_BYTESTRING_RAW("certificate2", sizeof("certificate2")-1);
+    UA_ByteString crl1 = UA_BYTESTRING_RAW("crl1", sizeof("crl1")-1);
+    UA_ByteString issuerCert1 = UA_BYTESTRING_RAW("issuerCert1", sizeof("issuerCert1")-1);
+    UA_ByteString issuerCrl1 = UA_BYTESTRING_RAW("issuerCrl1", sizeof("issuerCrl1")-1);
+    UA_ByteString notInList = UA_BYTESTRING_RAW("notInList", sizeof("notInList")-1);
 
     /* Define mask constants */
     const UA_TrustListMasks maskAll = (UA_TrustListMasks)UA_TRUSTLISTMASKS_ALL;
@@ -992,7 +992,7 @@ START_TEST(TrustListDataType_contains) {
 } END_TEST
 
 START_TEST(byteStringCopy) {
-    UA_ByteString src = UA_BYTESTRING("test data");
+    UA_ByteString src = UA_BYTESTRING_RAW("test data", sizeof("test data")-1);
     UA_ByteString dst;
     UA_ByteString_init(&dst);
 
@@ -1013,10 +1013,10 @@ START_TEST(byteStringCopy) {
 } END_TEST
 
 START_TEST(byteStringEqual) {
-    UA_ByteString bs1 = UA_BYTESTRING("hello");
-    UA_ByteString bs2 = UA_BYTESTRING("hello");
-    UA_ByteString bs3 = UA_BYTESTRING("world");
-    UA_ByteString bs4 = UA_BYTESTRING("helloworld");
+    UA_ByteString bs1 = UA_BYTESTRING_RAW("hello", sizeof("hello")-1);
+    UA_ByteString bs2 = UA_BYTESTRING_RAW("hello", sizeof("hello")-1);
+    UA_ByteString bs3 = UA_BYTESTRING_RAW("world", sizeof("world")-1);
+    UA_ByteString bs4 = UA_BYTESTRING_RAW("helloworld", sizeof("helloworld")-1);
 
     ck_assert(UA_ByteString_equal(&bs1, &bs2) == true);
     ck_assert(UA_ByteString_equal(&bs1, &bs3) == false);
@@ -1058,8 +1058,8 @@ START_TEST(trustListDataTypeOperations) {
     UA_TrustListDataType_init(&dst);
 
     /* Create test certificates */
-    UA_ByteString cert1 = UA_BYTESTRING("TestCert1");
-    UA_ByteString cert2 = UA_BYTESTRING("TestCert2");
+    UA_ByteString cert1 = UA_BYTESTRING_RAW("TestCert1", sizeof("TestCert1")-1);
+    UA_ByteString cert2 = UA_BYTESTRING_RAW("TestCert2", sizeof("TestCert2")-1);
 
     /* Set up source trust list with certificates */
     src.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;

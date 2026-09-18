@@ -263,7 +263,7 @@ START_TEST(xml_guid) {
 
 /* ========== ByteString ========== */
 START_TEST(xml_bytestring) {
-    UA_ByteString src = UA_BYTESTRING("binarydata"), dst;
+    UA_ByteString src = UA_BYTESTRING_RAW("binarydata", sizeof("binarydata")-1), dst;
     UA_ByteString_init(&dst);
     ck_assert_uint_eq(roundtripXml(&src, &UA_TYPES[UA_TYPES_BYTESTRING], &dst),
                       UA_STATUSCODE_GOOD);
@@ -442,7 +442,7 @@ START_TEST(xml_variant_bytestring) {
     UA_Variant src, dst;
     UA_Variant_init(&src);
     UA_Variant_init(&dst);
-    UA_ByteString val = UA_BYTESTRING("data");
+    UA_ByteString val = UA_BYTESTRING_RAW("data", sizeof("data")-1);
     UA_Variant_setScalarCopy(&src, &val, &UA_TYPES[UA_TYPES_BYTESTRING]);
     ck_assert_uint_eq(roundtripXml(&src, &UA_TYPES[UA_TYPES_VARIANT], &dst),
                       UA_STATUSCODE_GOOD);
@@ -523,7 +523,7 @@ START_TEST(xml_calcsize) {
 
 /* ========== Decode from known XML strings ========== */
 START_TEST(xml_decode_bool_true) {
-    UA_ByteString xml = UA_BYTESTRING("<Boolean>true</Boolean>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<Boolean>true</Boolean>", sizeof("<Boolean>true</Boolean>")-1);
     UA_Boolean dst = false;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_BOOLEAN], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -531,7 +531,7 @@ START_TEST(xml_decode_bool_true) {
 } END_TEST
 
 START_TEST(xml_decode_bool_false) {
-    UA_ByteString xml = UA_BYTESTRING("<Boolean>false</Boolean>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<Boolean>false</Boolean>", sizeof("<Boolean>false</Boolean>")-1);
     UA_Boolean dst = true;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_BOOLEAN], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -539,7 +539,7 @@ START_TEST(xml_decode_bool_false) {
 } END_TEST
 
 START_TEST(xml_decode_int32) {
-    UA_ByteString xml = UA_BYTESTRING("<Int32>-42</Int32>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<Int32>-42</Int32>", sizeof("<Int32>-42</Int32>")-1);
     UA_Int32 dst = 0;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_INT32], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -547,7 +547,7 @@ START_TEST(xml_decode_int32) {
 } END_TEST
 
 START_TEST(xml_decode_uint32) {
-    UA_ByteString xml = UA_BYTESTRING("<UInt32>4294967295</UInt32>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<UInt32>4294967295</UInt32>", sizeof("<UInt32>4294967295</UInt32>")-1);
     UA_UInt32 dst = 0;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_UINT32], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -555,7 +555,7 @@ START_TEST(xml_decode_uint32) {
 } END_TEST
 
 START_TEST(xml_decode_double_inf) {
-    UA_ByteString xml = UA_BYTESTRING("INF");
+    UA_ByteString xml = UA_BYTESTRING_RAW("INF", sizeof("INF")-1);
     UA_Double dst = 0;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_DOUBLE], NULL);
     if(res == UA_STATUSCODE_GOOD)
@@ -563,7 +563,7 @@ START_TEST(xml_decode_double_inf) {
 } END_TEST
 
 START_TEST(xml_decode_double_neginf) {
-    UA_ByteString xml = UA_BYTESTRING("-INF");
+    UA_ByteString xml = UA_BYTESTRING_RAW("-INF", sizeof("-INF")-1);
     UA_Double dst = 0;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_DOUBLE], NULL);
     if(res == UA_STATUSCODE_GOOD)
@@ -571,7 +571,7 @@ START_TEST(xml_decode_double_neginf) {
 } END_TEST
 
 START_TEST(xml_decode_double_nan) {
-    UA_ByteString xml = UA_BYTESTRING("NaN");
+    UA_ByteString xml = UA_BYTESTRING_RAW("NaN", sizeof("NaN")-1);
     UA_Double dst = 0;
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_DOUBLE], NULL);
     if(res == UA_STATUSCODE_GOOD)
@@ -579,7 +579,7 @@ START_TEST(xml_decode_double_nan) {
 } END_TEST
 
 START_TEST(xml_decode_string) {
-    UA_ByteString xml = UA_BYTESTRING("<String>hello world</String>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<String>hello world</String>", sizeof("<String>hello world</String>")-1);
     UA_String dst;
     UA_String_init(&dst);
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_STRING], NULL);
@@ -588,7 +588,7 @@ START_TEST(xml_decode_string) {
 } END_TEST
 
 START_TEST(xml_decode_numeric_enum) {
-    UA_ByteString xml = UA_BYTESTRING("<ServerState>5</ServerState>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<ServerState>5</ServerState>", sizeof("<ServerState>5</ServerState>")-1);
     UA_ServerState dst = UA_SERVERSTATE_RUNNING;
     UA_StatusCode res =
         UA_decodeXml(&xml, &dst, &UA_TYPES[UA_TYPES_SERVERSTATE], NULL);
@@ -597,8 +597,9 @@ START_TEST(xml_decode_numeric_enum) {
 } END_TEST
 
 START_TEST(xml_decode_union) {
-    UA_ByteString xml = UA_BYTESTRING(
-        "<TestUnion><SwitchField>2</SwitchField><Text>hello</Text></TestUnion>");
+    UA_ByteString xml = UA_BYTESTRING_RAW(
+        "<TestUnion><SwitchField>2</SwitchField><Text>hello</Text></TestUnion>", sizeof(
+        "<TestUnion><SwitchField>2</SwitchField><Text>hello</Text></TestUnion>")-1);
     TestUnion dst;
     memset(&dst, 0, sizeof(dst));
     UA_StatusCode res = UA_decodeXml(&xml, &dst, &testUnionType, NULL);
@@ -652,7 +653,7 @@ START_TEST(xml_decode_character_references) {
 } END_TEST
 
 START_TEST(xml_decode_invalid_character_reference) {
-    UA_ByteString xml = UA_BYTESTRING("<String>&unknown;</String>");
+    UA_ByteString xml = UA_BYTESTRING_RAW("<String>&unknown;</String>", sizeof("<String>&unknown;</String>")-1);
     UA_String dst;
     UA_String_init(&dst);
     UA_StatusCode res =

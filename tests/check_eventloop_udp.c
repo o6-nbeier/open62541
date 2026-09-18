@@ -113,7 +113,7 @@ connectionCallback(UA_ConnectionManager *cm, uintptr_t connectionId,
         ctx->connCount--;
 
     if(msg.length > 0) {
-        UA_ByteString rcv = UA_BYTESTRING(testMsg);
+        UA_ByteString rcv = UA_BYTESTRING_RAW(testMsg, strlen(testMsg));
         ck_assert(UA_String_equal(&msg, &rcv));
         received = true;
     }

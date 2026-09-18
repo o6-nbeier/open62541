@@ -96,10 +96,10 @@ START_TEST(ClientConfig_Copy){
     srcConfig.eventLoop->dateTime_now = UA_DateTime_now_fake;
     srcConfig.eventLoop->dateTime_nowMonotonic = UA_DateTime_now_fake;
     srcConfig.httpAllowUnencrypted = true;
-    srcConfig.httpCaCertificate = UA_BYTESTRING_ALLOC("independent HTTP CA");
+    srcConfig.httpCaCertificate = UA_BYTESTRING_ALLOC_RAW("independent HTTP CA", sizeof("independent HTTP CA")-1);
     ck_assert_ptr_nonnull(srcConfig.httpCaCertificate.data);
-    srcConfig.httpClientCertificate = UA_BYTESTRING_ALLOC("HTTP client cert");
-    srcConfig.httpClientPrivateKey = UA_BYTESTRING_ALLOC("HTTP client key");
+    srcConfig.httpClientCertificate = UA_BYTESTRING_ALLOC_RAW("HTTP client cert", sizeof("HTTP client cert")-1);
+    srcConfig.httpClientPrivateKey = UA_BYTESTRING_ALLOC_RAW("HTTP client key", sizeof("HTTP client key")-1);
     srcConfig.httpClientPrivateKeyPassword = UA_STRING_ALLOC("HTTP key password");
     srcConfig.httpTimeout = 17;
     srcConfig.httpMaxMsgSize = 123456;

@@ -353,7 +353,7 @@ START_TEST(dataValue_copy) {
 
 START_TEST(byteString_operations) {
     /* Create from allocating */
-    UA_ByteString bs = UA_BYTESTRING_ALLOC("Hello World");
+    UA_ByteString bs = UA_BYTESTRING_ALLOC_RAW("Hello World", sizeof("Hello World")-1);
     ck_assert_uint_eq(bs.length, 11);
 
     /* Copy */

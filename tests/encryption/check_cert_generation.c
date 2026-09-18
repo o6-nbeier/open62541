@@ -132,7 +132,7 @@ START_TEST(certificate_utils_outputs_are_transactional) {
     ck_assert_ptr_eq(output.data, sentinelData);
     ck_assert_uint_eq(output.length, sizeof(sentinelData) - 1);
 
-    UA_ByteString malformedCertificate = UA_BYTESTRING("not-a-certificate");
+    UA_ByteString malformedCertificate = UA_BYTESTRING_RAW("not-a-certificate", sizeof("not-a-certificate")-1);
     status = UA_CertificateUtils_getSubjectName(&malformedCertificate, &output);
     ck_assert_uint_ne(status, UA_STATUSCODE_GOOD);
     ck_assert_ptr_eq(output.data, sentinelData);

@@ -103,7 +103,7 @@ START_TEST(copy_browseresult) {
     UA_BrowseResult src;
     UA_BrowseResult_init(&src);
     src.statusCode = UA_STATUSCODE_GOOD;
-    src.continuationPoint = UA_BYTESTRING_ALLOC("cp");
+    src.continuationPoint = UA_BYTESTRING_ALLOC_RAW("cp", sizeof("cp")-1);
 
     src.referencesSize = 2;
     src.references = (UA_ReferenceDescription*)
@@ -300,7 +300,7 @@ START_TEST(extensionobject_bytestring) {
 
     eo.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     eo.content.encoded.typeId = UA_NODEID_NUMERIC(0, 777);
-    eo.content.encoded.body = UA_BYTESTRING_ALLOC("testdata");
+    eo.content.encoded.body = UA_BYTESTRING_ALLOC_RAW("testdata", sizeof("testdata")-1);
 
     UA_ExtensionObject dst;
     UA_StatusCode res = UA_ExtensionObject_copy(&eo, &dst);

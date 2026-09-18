@@ -68,8 +68,8 @@ START_TEST(order_string) {
 } END_TEST
 
 START_TEST(order_bytestring) {
-    UA_ByteString a = UA_BYTESTRING("abc");
-    UA_ByteString b = UA_BYTESTRING("def");
+    UA_ByteString a = UA_BYTESTRING_RAW("abc", sizeof("abc")-1);
+    UA_ByteString b = UA_BYTESTRING_RAW("def", sizeof("def")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_BYTESTRING]), UA_ORDER_LESS);
 } END_TEST
 
@@ -121,10 +121,10 @@ START_TEST(order_nodeid_bytestring) {
     UA_NodeId a, b;
     a.namespaceIndex = 1;
     a.identifierType = UA_NODEIDTYPE_BYTESTRING;
-    a.identifier.byteString = UA_BYTESTRING("abc");
+    a.identifier.byteString = UA_BYTESTRING_RAW("abc", sizeof("abc")-1);
     b.namespaceIndex = 1;
     b.identifierType = UA_NODEIDTYPE_BYTESTRING;
-    b.identifier.byteString = UA_BYTESTRING("def");
+    b.identifier.byteString = UA_BYTESTRING_RAW("def", sizeof("def")-1);
     ck_assert_int_eq(UA_order(&a, &b, &UA_TYPES[UA_TYPES_NODEID]), UA_ORDER_LESS);
 } END_TEST
 
@@ -414,7 +414,7 @@ START_TEST(nodeid_isNull_bytestring) {
     UA_NodeId b;
     b.namespaceIndex = 0;
     b.identifierType = UA_NODEIDTYPE_BYTESTRING;
-    b.identifier.byteString = UA_BYTESTRING("data");
+    b.identifier.byteString = UA_BYTESTRING_RAW("data", sizeof("data")-1);
     ck_assert(!UA_NodeId_isNull(&b));
 } END_TEST
 

@@ -1765,7 +1765,7 @@ START_TEST(eventFieldsMap_withEventId) {
     UA_KeyValueMap fieldMap = {1, vals};
     ed.eventFields = &fieldMap;
 
-    UA_ByteString myEventId = UA_BYTESTRING("custom-event-id-1234");
+    UA_ByteString myEventId = UA_BYTESTRING_RAW("custom-event-id-1234", sizeof("custom-event-id-1234")-1);
     vals[0].key = UA_QUALIFIEDNAME(0, "/EventId");
     UA_Variant_setScalar(&vals[0].value, &myEventId, &UA_TYPES[UA_TYPES_BYTESTRING]);
 

@@ -19,7 +19,7 @@
 /* ===== Helper ===== */
 static UA_StatusCode
 decode(const char *json, void *dst, const UA_DataType *type) {
-    UA_ByteString src = UA_BYTESTRING((char*)(uintptr_t)json);
+    UA_ByteString src = UA_BYTESTRING_RAW((char*)(uintptr_t)json, strlen((char*)(uintptr_t)json));
     return UA_decodeJson(&src, dst, type, NULL);
 }
 
@@ -314,7 +314,7 @@ START_TEST(json_decode_eo_known_bytestring_stays_encoded) {
     ck_assert_uint_eq(eo.encoding, UA_EXTENSIONOBJECT_ENCODED_BYTESTRING);
     ck_assert(UA_NodeId_equal(&eo.content.encoded.typeId,
                               &UA_TYPES[UA_TYPES_ARGUMENT].typeId));
-    const UA_ByteString expected = UA_BYTESTRING("test");
+    const UA_ByteString expected = UA_BYTESTRING_RAW("test", sizeof("test")-1);
     ck_assert(UA_ByteString_equal(&eo.content.encoded.body, &expected));
     UA_ExtensionObject_clear(&eo);
 } END_TEST
@@ -1197,7 +1197,7 @@ START_TEST(json_decode_initializes_destination_on_tokenizer_error) {
 
 START_TEST(json_decode_reports_boundary_with_trailing_input) {
     const char *json = "42 trailing";
-    UA_ByteString src = UA_BYTESTRING((char*)(uintptr_t)json);
+    UA_ByteString src = UA_BYTESTRING_RAW((char*)(uintptr_t)json, strlen((char*)(uintptr_t)json));
     UA_Int32 value = 0;
     size_t decodedLength = 0;
     UA_DecodeJsonOptions options;

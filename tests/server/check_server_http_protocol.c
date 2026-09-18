@@ -457,8 +457,8 @@ START_TEST(closingHttpListenerCleansOnlyItsChannels) {
     config->tcpEnabled = false;
     config->httpEnabled = true;
     config->httpAllowUnencrypted = true;
-    config->httpCertificate = UA_BYTESTRING_ALLOC("certificate");
-    config->httpPrivateKey = UA_BYTESTRING_ALLOC("private-key");
+    config->httpCertificate = UA_BYTESTRING_ALLOC_RAW("certificate", sizeof("certificate")-1);
+    config->httpPrivateKey = UA_BYTESTRING_ALLOC_RAW("private-key", sizeof("private-key")-1);
     UA_Array_delete(config->serverUrls, config->serverUrlsSize,
                     &UA_TYPES[UA_TYPES_STRING]);
     config->serverUrls =

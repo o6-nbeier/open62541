@@ -425,7 +425,7 @@ sendInvalidRequest(UA_ConnectionManager *http, UA_EventLoop *eventLoop,
                              &UA_TYPES[UA_TYPES_STRING]);
         headersSize++;
     }
-    UA_ByteString body = UA_BYTESTRING_ALLOC((char *)(uintptr_t)payload);
+    UA_ByteString body = UA_BYTESTRING_ALLOC_RAW((char *)(uintptr_t)payload, strlen((char *)(uintptr_t)payload));
     sendHttpPost(http, eventLoop, path, headers, headersSize, &body, false);
     ck_assert_uint_eq(responseStatus, expectedStatus);
     ck_assert_uint_eq(responseBody.length, 0);

@@ -1637,7 +1637,7 @@ END_TEST
 START_TEST(UA_ByteString_json_encode) {
     UA_ByteString *src = UA_ByteString_new();
     UA_ByteString_init(src);
-    *src = UA_BYTESTRING_ALLOC("asdfasdf");
+    *src = UA_BYTESTRING_ALLOC_RAW("asdfasdf", sizeof("asdfasdf")-1);
     const UA_DataType *type = &UA_TYPES[UA_TYPES_BYTESTRING];
     size_t size = UA_calcSizeJson((void *) src, type, NULL);
 
@@ -1659,7 +1659,7 @@ END_TEST
 START_TEST(UA_ByteString2_json_encode) {
     UA_ByteString *src = UA_ByteString_new();
     UA_ByteString_init(src);
-    *src = UA_BYTESTRING_ALLOC("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    *src = UA_BYTESTRING_ALLOC_RAW("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", sizeof("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")-1);
     const UA_DataType *type = &UA_TYPES[UA_TYPES_BYTESTRING];
     size_t size = UA_calcSizeJson((void *) src, type, NULL);
 
@@ -1682,7 +1682,7 @@ START_TEST(UA_ByteString3_json_encode) {
     UA_Variant *src = UA_Variant_new();
     UA_Variant_init(src);
     UA_ByteString *variantContent = UA_ByteString_new();
-    *variantContent = UA_BYTESTRING_ALLOC("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    *variantContent = UA_BYTESTRING_ALLOC_RAW("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", sizeof("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")-1);
     UA_Variant_setScalar(src, variantContent, &UA_TYPES[UA_TYPES_BYTESTRING]);
 
     const UA_DataType *type = &UA_TYPES[UA_TYPES_VARIANT];
@@ -2509,7 +2509,7 @@ START_TEST(UA_ExtensionObject_xml_json_encode) {
     src->encoding = UA_EXTENSIONOBJECT_ENCODED_XML;
     src->content.encoded.typeId = UA_NODEID_NUMERIC(2,1234);
 
-    UA_ByteString b = UA_BYTESTRING_ALLOC("<Elemement></Element>");
+    UA_ByteString b = UA_BYTESTRING_ALLOC_RAW("<Elemement></Element>", sizeof("<Elemement></Element>")-1);
     src->content.encoded.body = b;
 
     const UA_DataType *type = &UA_TYPES[UA_TYPES_EXTENSIONOBJECT];
@@ -2538,7 +2538,7 @@ START_TEST(UA_ExtensionObject_byteString_json_encode) {
     src->encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     src->content.encoded.typeId = UA_NODEID_NUMERIC(2,1234);
 
-    UA_ByteString b = UA_BYTESTRING_ALLOC("123456789012345678901234567890");
+    UA_ByteString b = UA_BYTESTRING_ALLOC_RAW("123456789012345678901234567890", sizeof("123456789012345678901234567890")-1);
     src->content.encoded.body = b;
 
     const UA_DataType *type = &UA_TYPES[UA_TYPES_EXTENSIONOBJECT];
@@ -5354,7 +5354,7 @@ START_TEST(UA_Boolean_true_public_json_encode) {
     status s = UA_encodeJson(&src, &UA_TYPES[UA_TYPES_BOOLEAN], &out, NULL);
 
     ck_assert_int_eq(s, UA_STATUSCODE_GOOD);
-    UA_ByteString result = UA_BYTESTRING("true");
+    UA_ByteString result = UA_BYTESTRING_RAW("true", sizeof("true")-1);
     ck_assert(UA_ByteString_equal(&result, &out));
 
     UA_ByteString_clear(&out);

@@ -365,7 +365,7 @@ START_TEST(clear_nodeId_bytestring) {
     UA_NodeId *nodeId = (UA_NodeId*)UA_new(&UA_TYPES[UA_TYPES_NODEID]);
     nodeId->identifierType = UA_NODEIDTYPE_BYTESTRING;
     nodeId->namespaceIndex = 2;
-    nodeId->identifier.byteString = UA_BYTESTRING_ALLOC("binaryid");
+    nodeId->identifier.byteString = UA_BYTESTRING_ALLOC_RAW("binaryid", sizeof("binaryid")-1);
     UA_clear(nodeId, &UA_TYPES[UA_TYPES_NODEID]);
     UA_free(nodeId);
 } END_TEST
@@ -420,7 +420,7 @@ START_TEST(diagnosticInfo_copy) {
     src.hasLocale = true;
     src.locale = 9;
     src.hasAdditionalInfo = true;
-    src.additionalInfo = UA_BYTESTRING_ALLOC("extra");
+    src.additionalInfo = UA_BYTESTRING_ALLOC_RAW("extra", sizeof("extra")-1);
 
     UA_DiagnosticInfo dst;
     UA_DiagnosticInfo_init(&dst);

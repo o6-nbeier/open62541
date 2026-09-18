@@ -38,20 +38,20 @@ START_TEST(trustlist_add_with_certs) {
 
     src.trustedCertificatesSize = 2;
     src.trustedCertificates = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert1");
-    src.trustedCertificates[1] = UA_BYTESTRING_ALLOC("cert2");
+    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert1", sizeof("cert1")-1);
+    src.trustedCertificates[1] = UA_BYTESTRING_ALLOC_RAW("cert2", sizeof("cert2")-1);
 
     src.trustedCrlsSize = 1;
     src.trustedCrls = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCrls[0] = UA_BYTESTRING_ALLOC("crl1");
+    src.trustedCrls[0] = UA_BYTESTRING_ALLOC_RAW("crl1", sizeof("crl1")-1);
 
     src.issuerCertificatesSize = 1;
     src.issuerCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.issuerCertificates[0] = UA_BYTESTRING_ALLOC("issuer1");
+    src.issuerCertificates[0] = UA_BYTESTRING_ALLOC_RAW("issuer1", sizeof("issuer1")-1);
 
     src.issuerCrlsSize = 1;
     src.issuerCrls = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.issuerCrls[0] = UA_BYTESTRING_ALLOC("issuercrl1");
+    src.issuerCrls[0] = UA_BYTESTRING_ALLOC_RAW("issuercrl1", sizeof("issuercrl1")-1);
 
     UA_StatusCode res = UA_TrustListDataType_add(&src, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -66,7 +66,7 @@ START_TEST(trustlist_add_with_certs) {
     src2.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     src2.trustedCertificatesSize = 1;
     src2.trustedCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src2.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert3");
+    src2.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert3", sizeof("cert3")-1);
 
     res = UA_TrustListDataType_add(&src2, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -85,14 +85,14 @@ START_TEST(trustlist_set) {
     /* Set up dst with some data first */
     dst.trustedCertificatesSize = 1;
     dst.trustedCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC("old_cert");
+    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("old_cert", sizeof("old_cert")-1);
 
     /* Set up src */
     src.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     src.trustedCertificatesSize = 2;
     src.trustedCertificates = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC("new_cert1");
-    src.trustedCertificates[1] = UA_BYTESTRING_ALLOC("new_cert2");
+    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("new_cert1", sizeof("new_cert1")-1);
+    src.trustedCertificates[1] = UA_BYTESTRING_ALLOC_RAW("new_cert2", sizeof("new_cert2")-1);
 
     UA_StatusCode res = UA_TrustListDataType_set(&src, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -112,25 +112,25 @@ START_TEST(trustlist_remove) {
                          UA_TRUSTLISTMASKS_TRUSTEDCRLS;
     dst.trustedCertificatesSize = 3;
     dst.trustedCertificates = (UA_ByteString *)UA_Array_new(3, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert1");
-    dst.trustedCertificates[1] = UA_BYTESTRING_ALLOC("cert2");
-    dst.trustedCertificates[2] = UA_BYTESTRING_ALLOC("cert3");
+    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert1", sizeof("cert1")-1);
+    dst.trustedCertificates[1] = UA_BYTESTRING_ALLOC_RAW("cert2", sizeof("cert2")-1);
+    dst.trustedCertificates[2] = UA_BYTESTRING_ALLOC_RAW("cert3", sizeof("cert3")-1);
 
     dst.trustedCrlsSize = 2;
     dst.trustedCrls = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.trustedCrls[0] = UA_BYTESTRING_ALLOC("crl1");
-    dst.trustedCrls[1] = UA_BYTESTRING_ALLOC("crl2");
+    dst.trustedCrls[0] = UA_BYTESTRING_ALLOC_RAW("crl1", sizeof("crl1")-1);
+    dst.trustedCrls[1] = UA_BYTESTRING_ALLOC_RAW("crl2", sizeof("crl2")-1);
 
     /* Remove cert2 and crl1 */
     src.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES |
                          UA_TRUSTLISTMASKS_TRUSTEDCRLS;
     src.trustedCertificatesSize = 1;
     src.trustedCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert2");
+    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert2", sizeof("cert2")-1);
 
     src.trustedCrlsSize = 1;
     src.trustedCrls = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCrls[0] = UA_BYTESTRING_ALLOC("crl1");
+    src.trustedCrls[0] = UA_BYTESTRING_ALLOC_RAW("crl1", sizeof("crl1")-1);
 
     UA_StatusCode res = UA_TrustListDataType_remove(&src, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -151,24 +151,24 @@ START_TEST(trustlist_remove_issuer) {
                          UA_TRUSTLISTMASKS_ISSUERCRLS;
     dst.issuerCertificatesSize = 2;
     dst.issuerCertificates = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.issuerCertificates[0] = UA_BYTESTRING_ALLOC("issuer1");
-    dst.issuerCertificates[1] = UA_BYTESTRING_ALLOC("issuer2");
+    dst.issuerCertificates[0] = UA_BYTESTRING_ALLOC_RAW("issuer1", sizeof("issuer1")-1);
+    dst.issuerCertificates[1] = UA_BYTESTRING_ALLOC_RAW("issuer2", sizeof("issuer2")-1);
 
     dst.issuerCrlsSize = 2;
     dst.issuerCrls = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.issuerCrls[0] = UA_BYTESTRING_ALLOC("issuercrl1");
-    dst.issuerCrls[1] = UA_BYTESTRING_ALLOC("issuercrl2");
+    dst.issuerCrls[0] = UA_BYTESTRING_ALLOC_RAW("issuercrl1", sizeof("issuercrl1")-1);
+    dst.issuerCrls[1] = UA_BYTESTRING_ALLOC_RAW("issuercrl2", sizeof("issuercrl2")-1);
 
     /* Remove issuer1 and issuercrl2 */
     src.specifiedLists = UA_TRUSTLISTMASKS_ISSUERCERTIFICATES |
                          UA_TRUSTLISTMASKS_ISSUERCRLS;
     src.issuerCertificatesSize = 1;
     src.issuerCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.issuerCertificates[0] = UA_BYTESTRING_ALLOC("issuer1");
+    src.issuerCertificates[0] = UA_BYTESTRING_ALLOC_RAW("issuer1", sizeof("issuer1")-1);
 
     src.issuerCrlsSize = 1;
     src.issuerCrls = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.issuerCrls[0] = UA_BYTESTRING_ALLOC("issuercrl2");
+    src.issuerCrls[0] = UA_BYTESTRING_ALLOC_RAW("issuercrl2", sizeof("issuercrl2")-1);
 
     UA_StatusCode res = UA_TrustListDataType_remove(&src, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -188,13 +188,13 @@ START_TEST(trustlist_remove_nonexistent) {
     dst.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     dst.trustedCertificatesSize = 1;
     dst.trustedCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert1");
+    dst.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert1", sizeof("cert1")-1);
 
     /* Try removing something that doesn't exist */
     src.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     src.trustedCertificatesSize = 1;
     src.trustedCertificates = (UA_ByteString *)UA_Array_new(1, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC("nonexistent");
+    src.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("nonexistent", sizeof("nonexistent")-1);
 
     UA_StatusCode res = UA_TrustListDataType_remove(&src, &dst);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -211,13 +211,13 @@ START_TEST(trustlist_contains) {
     tl.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     tl.trustedCertificatesSize = 2;
     tl.trustedCertificates = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    tl.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert1");
-    tl.trustedCertificates[1] = UA_BYTESTRING_ALLOC("cert2");
+    tl.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert1", sizeof("cert1")-1);
+    tl.trustedCertificates[1] = UA_BYTESTRING_ALLOC_RAW("cert2", sizeof("cert2")-1);
 
-    UA_ByteString cert = UA_BYTESTRING("cert1");
+    UA_ByteString cert = UA_BYTESTRING_RAW("cert1", sizeof("cert1")-1);
     ck_assert(UA_TrustListDataType_contains(&tl, &cert, UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES));
 
-    UA_ByteString notCert = UA_BYTESTRING("nope");
+    UA_ByteString notCert = UA_BYTESTRING_RAW("nope", sizeof("nope")-1);
     ck_assert(!UA_TrustListDataType_contains(&tl, &notCert, UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES));
 
     UA_TrustListDataType_clear(&tl);
@@ -233,8 +233,8 @@ START_TEST(trustlist_getSize) {
     tl.specifiedLists = UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES;
     tl.trustedCertificatesSize = 2;
     tl.trustedCertificates = (UA_ByteString *)UA_Array_new(2, &UA_TYPES[UA_TYPES_BYTESTRING]);
-    tl.trustedCertificates[0] = UA_BYTESTRING_ALLOC("cert1");
-    tl.trustedCertificates[1] = UA_BYTESTRING_ALLOC("cert2");
+    tl.trustedCertificates[0] = UA_BYTESTRING_ALLOC_RAW("cert1", sizeof("cert1")-1);
+    tl.trustedCertificates[1] = UA_BYTESTRING_ALLOC_RAW("cert2", sizeof("cert2")-1);
 
     UA_UInt32 size1 = UA_TrustListDataType_getSize(&tl);
     ck_assert(size1 > 0);

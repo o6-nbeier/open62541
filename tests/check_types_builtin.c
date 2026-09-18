@@ -1536,7 +1536,7 @@ START_TEST(UA_Variant_copyShallWorkOnSingleValueExample) {
 END_TEST
 
 START_TEST(UA_Variant_copyShallWorkOnByteStringIndexRange) {
-    UA_ByteString text = UA_BYTESTRING("My xml");
+    UA_ByteString text = UA_BYTESTRING_RAW("My xml", sizeof("My xml")-1);
     UA_Variant src;
     UA_Variant_setScalar(&src, &text, &UA_TYPES[UA_TYPES_BYTESTRING]);
 
@@ -1784,13 +1784,13 @@ START_TEST(UA_Variant_encodeDecodeShallWorkOnVariantWithArrayOfExtensionObjectsW
     UA_ExtensionObject* arrayElement = sourceArray;
     UA_ExtensionObject_init(arrayElement);
     arrayElement->encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
-    arrayElement->content.encoded.body = UA_BYTESTRING("DataOfUnknownType");
+    arrayElement->content.encoded.body = UA_BYTESTRING_RAW("DataOfUnknownType", sizeof("DataOfUnknownType")-1);
     arrayElement->content.encoded.typeId = UA_NODEID_NUMERIC(2, 4);
 
     arrayElement = &sourceArray[1];
     UA_ExtensionObject_init(arrayElement);
     arrayElement->encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
-    arrayElement->content.encoded.body = UA_BYTESTRING("DataOfUnknownType");
+    arrayElement->content.encoded.body = UA_BYTESTRING_RAW("DataOfUnknownType", sizeof("DataOfUnknownType")-1);
     arrayElement->content.encoded.typeId = UA_NODEID_NUMERIC(2, 4);
 
     EncodeDecodeArrayOfExtensionObjectTest(sourceArray, arraySize);

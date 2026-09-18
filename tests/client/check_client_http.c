@@ -311,7 +311,7 @@ runClientScenario(HttpClientScenario scenario) {
     ck_assert_uint_eq(UA_ClientConfig_setDefault(&clientConfig),
                       UA_STATUSCODE_GOOD);
     clientConfig.httpAllowUnencrypted = true;
-    clientConfig.httpClientCertificate = UA_BYTESTRING_ALLOC("certificate");
+    clientConfig.httpClientCertificate = UA_BYTESTRING_ALLOC_RAW("certificate", sizeof("certificate")-1);
     client = UA_Client_newWithConfig(&clientConfig);
     ck_assert_ptr_nonnull(client);
     ck_assert_uint_eq(UA_Client_connect(client, endpoint),
@@ -524,7 +524,7 @@ runClientScenario(HttpClientScenario scenario) {
     addSyntheticReadCall(client, 0xf000000c, &duplicateTypeResult);
     injectHttpClientResponseHeaders(client, 0xf000000c,
                                     duplicateTypeHeaders, 2,
-                                    UA_BYTESTRING("body"));
+                                    UA_BYTESTRING_RAW("body", sizeof("body")-1));
     ck_assert_uint_eq(duplicateTypeResult.callbacks, 1);
     ck_assert_uint_eq(duplicateTypeResult.status,
                       UA_STATUSCODE_BADDECODINGERROR);
@@ -532,7 +532,7 @@ runClientScenario(HttpClientScenario scenario) {
     AsyncReadResult missingTypeResult = {0};
     addSyntheticReadCall(client, 0xf0000006, &missingTypeResult);
     injectHttpClientResponse(client, 0xf0000006, NULL,
-                             UA_BYTESTRING("body"), true);
+                             UA_BYTESTRING_RAW("body", sizeof("body")-1), true);
     ck_assert_uint_eq(missingTypeResult.callbacks, 1);
     ck_assert_uint_eq(missingTypeResult.status,
                       UA_STATUSCODE_BADDECODINGERROR);
@@ -541,7 +541,7 @@ runClientScenario(HttpClientScenario scenario) {
     addSyntheticReadCall(client, 0xf000000a, &wrongContentTypeResult);
     const UA_String jsonContentType = UA_STRING_STATIC("application/json");
     injectHttpClientResponse(client, 0xf000000a, &jsonContentType,
-                             UA_BYTESTRING("body"), true);
+                             UA_BYTESTRING_RAW("body", sizeof("body")-1), true);
     ck_assert_uint_eq(wrongContentTypeResult.callbacks, 1);
     ck_assert_uint_eq(wrongContentTypeResult.status,
                       UA_STATUSCODE_BADDECODINGERROR);
@@ -813,7 +813,7 @@ runClientScenario(HttpClientScenario scenario) {
     UA_Variant_clear(&value);
     AsyncReadResult malformedJsonResult = {0};
     addSyntheticReadCall(client, 0xf0000005, &malformedJsonResult);
-    UA_ByteString malformedJson = UA_BYTESTRING("{");
+    UA_ByteString malformedJson = UA_BYTESTRING_RAW("{", sizeof("{")-1);
     injectHttpClientResponse(client, 0xf0000005,
                              &UA_HTTP_CONTENTTYPE_JSON, malformedJson, true);
     ck_assert_uint_eq(malformedJsonResult.callbacks, 1);

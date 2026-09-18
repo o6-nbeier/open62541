@@ -389,7 +389,7 @@ setValidGetSecurityKeysOutput(UA_CallResponse *response,
     UA_UInt32 tokenId = 1;
     UA_Duration timeToNextKey = 1000.0;
     UA_Duration keyLifetime = 2000.0;
-    keys[0] = UA_BYTESTRING("key");
+    keys[0] = UA_BYTESTRING_RAW("key", sizeof("key")-1);
     UA_Variant_setScalar(&output[0], &policyUri,
                          &UA_TYPES[UA_TYPES_STRING]);
     UA_Variant_setScalar(&output[1], &tokenId,

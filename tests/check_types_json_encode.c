@@ -295,7 +295,7 @@ START_TEST(json_encode_guid) {
 
 /* === ByteString JSON encoding (Base64) === */
 START_TEST(json_encode_bytestring) {
-    UA_ByteString val = UA_BYTESTRING("Hello");
+    UA_ByteString val = UA_BYTESTRING_RAW("Hello", sizeof("Hello")-1);
     UA_ByteString buf = UA_BYTESTRING_NULL;
     UA_StatusCode res = UA_encodeJson(&val, &UA_TYPES[UA_TYPES_BYTESTRING], &buf, NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
@@ -337,7 +337,7 @@ START_TEST(json_encode_nodeid_guid) {
 } END_TEST
 
 START_TEST(json_encode_nodeid_bytestring) {
-    UA_ByteString bs = UA_BYTESTRING("test");
+    UA_ByteString bs = UA_BYTESTRING_RAW("test", sizeof("test")-1);
     UA_NodeId val;
     val.namespaceIndex = 3;
     val.identifierType = UA_NODEIDTYPE_BYTESTRING;
@@ -844,9 +844,11 @@ START_TEST(json_optional_structure_roundtrip) {
 } END_TEST
 
 START_TEST(json_optional_structure_compact_decode) {
-    UA_ByteString encoded = UA_BYTESTRING(
+    UA_ByteString encoded = UA_BYTESTRING_RAW(
         "{\"OptionalValues\":[3,4],\"Required\":7,"
-        "\"EncodingMask\":3,\"Optional\":1.5}");
+        "\"EncodingMask\":3,\"Optional\":1.5}", sizeof(
+        "{\"OptionalValues\":[3,4],\"Required\":7,"
+        "\"EncodingMask\":3,\"Optional\":1.5}")-1);
     JsonOptionalStructure decoded;
     UA_StatusCode res = UA_decodeJson(&encoded, &decoded,
                                       &jsonCustomTypes[0], NULL);
@@ -856,7 +858,7 @@ START_TEST(json_optional_structure_compact_decode) {
     ck_assert_uint_eq(decoded.optionalValuesSize, 2);
     UA_clear(&decoded, &jsonCustomTypes[0]);
 
-    encoded = UA_BYTESTRING("{\"EncodingMask\":1,\"Required\":7}");
+    encoded = UA_BYTESTRING_RAW("{\"EncodingMask\":1,\"Required\":7}", sizeof("{\"EncodingMask\":1,\"Required\":7}")-1);
     res = UA_decodeJson(&encoded, &decoded, &jsonCustomTypes[0], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
     ck_assert_ptr_nonnull(decoded.optional);
@@ -924,14 +926,15 @@ START_TEST(json_optional_structure_compact_roundtrip) {
 } END_TEST
 
 START_TEST(json_optional_structure_rejects_bad_mask) {
-    UA_ByteString encoded = UA_BYTESTRING(
-        "{\"EncodingMask\":0,\"Required\":7,\"Optional\":1.5}");
+    UA_ByteString encoded = UA_BYTESTRING_RAW(
+        "{\"EncodingMask\":0,\"Required\":7,\"Optional\":1.5}", sizeof(
+        "{\"EncodingMask\":0,\"Required\":7,\"Optional\":1.5}")-1);
     JsonOptionalStructure decoded;
     UA_StatusCode res = UA_decodeJson(&encoded, &decoded,
                                       &jsonCustomTypes[0], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_BADDECODINGERROR);
 
-    encoded = UA_BYTESTRING("{\"EncodingMask\":4,\"Required\":7}");
+    encoded = UA_BYTESTRING_RAW("{\"EncodingMask\":4,\"Required\":7}", sizeof("{\"EncodingMask\":4,\"Required\":7}")-1);
     res = UA_decodeJson(&encoded, &decoded, &jsonCustomTypes[0], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_BADDECODINGERROR);
 } END_TEST
@@ -957,7 +960,7 @@ START_TEST(json_union_roundtrip) {
     UA_clear(&decoded, &jsonCustomTypes[1]);
     UA_ByteString_clear(&encoded);
 
-    encoded = UA_BYTESTRING("{\"Text\":\"hello\",\"SwitchField\":2}");
+    encoded = UA_BYTESTRING_RAW("{\"Text\":\"hello\",\"SwitchField\":2}", sizeof("{\"Text\":\"hello\",\"SwitchField\":2}")-1);
     res = UA_decodeJson(&encoded, &decoded, &jsonCustomTypes[1], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_GOOD);
     ck_assert_uint_eq(decoded.switchField, 2);
@@ -1027,17 +1030,18 @@ START_TEST(json_union_compact_roundtrip) {
 
 START_TEST(json_union_rejects_ambiguous_selection) {
     JsonUnion decoded;
-    UA_ByteString encoded = UA_BYTESTRING(
-        "{\"Number\":3.5,\"Text\":\"ambiguous\"}");
+    UA_ByteString encoded = UA_BYTESTRING_RAW(
+        "{\"Number\":3.5,\"Text\":\"ambiguous\"}", sizeof(
+        "{\"Number\":3.5,\"Text\":\"ambiguous\"}")-1);
     UA_StatusCode res = UA_decodeJson(&encoded, &decoded,
                                       &jsonCustomTypes[1], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_BADDECODINGERROR);
 
-    encoded = UA_BYTESTRING("{\"SwitchField\":1,\"Text\":\"wrong\"}");
+    encoded = UA_BYTESTRING_RAW("{\"SwitchField\":1,\"Text\":\"wrong\"}", sizeof("{\"SwitchField\":1,\"Text\":\"wrong\"}")-1);
     res = UA_decodeJson(&encoded, &decoded, &jsonCustomTypes[1], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_BADDECODINGERROR);
 
-    encoded = UA_BYTESTRING("{\"SwitchField\":4}");
+    encoded = UA_BYTESTRING_RAW("{\"SwitchField\":4}", sizeof("{\"SwitchField\":4}")-1);
     res = UA_decodeJson(&encoded, &decoded, &jsonCustomTypes[1], NULL);
     ck_assert_uint_eq(res, UA_STATUSCODE_BADDECODINGERROR);
 } END_TEST
@@ -1222,7 +1226,7 @@ START_TEST(json_encode_extensionobject_bytestring) {
     UA_ExtensionObject_init(&val);
     val.encoding = UA_EXTENSIONOBJECT_ENCODED_BYTESTRING;
     val.content.encoded.typeId = UA_NODEID_NUMERIC(0, 999);
-    val.content.encoded.body = UA_BYTESTRING("test");
+    val.content.encoded.body = UA_BYTESTRING_RAW("test", sizeof("test")-1);
 
     UA_ByteString buf = UA_BYTESTRING_NULL;
     UA_StatusCode res = UA_encodeJson(&val, &UA_TYPES[UA_TYPES_EXTENSIONOBJECT], &buf, NULL);

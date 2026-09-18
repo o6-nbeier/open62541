@@ -78,10 +78,10 @@ START_TEST(httpConfigurationValidation) {
     ck_assert_uint_eq(__Client_validateHttpConnection(client, false),
                       UA_STATUSCODE_GOOD);
 
-    config->httpClientCertificate = UA_BYTESTRING_ALLOC("certificate");
+    config->httpClientCertificate = UA_BYTESTRING_ALLOC_RAW("certificate", sizeof("certificate")-1);
     ck_assert_uint_eq(__Client_validateHttpConnection(client, true),
                       UA_STATUSCODE_BADINVALIDARGUMENT);
-    config->httpClientPrivateKey = UA_BYTESTRING_ALLOC("private-key");
+    config->httpClientPrivateKey = UA_BYTESTRING_ALLOC_RAW("private-key", sizeof("private-key")-1);
     ck_assert_uint_eq(__Client_validateHttpConnection(client, true),
                       UA_STATUSCODE_GOOD);
 
@@ -98,8 +98,8 @@ START_TEST(httpProviderReceivesTlsConfiguration) {
     UA_Client *client = UA_Client_new();
     ck_assert_ptr_nonnull(client);
     UA_ClientConfig *config = UA_Client_getConfig(client);
-    config->httpClientCertificate = UA_BYTESTRING_ALLOC("certificate");
-    config->httpClientPrivateKey = UA_BYTESTRING_ALLOC("private-key");
+    config->httpClientCertificate = UA_BYTESTRING_ALLOC_RAW("certificate", sizeof("certificate")-1);
+    config->httpClientPrivateKey = UA_BYTESTRING_ALLOC_RAW("private-key", sizeof("private-key")-1);
     config->httpClientPrivateKeyPassword = UA_STRING_ALLOC("password");
 
     TestHttpManager manager;

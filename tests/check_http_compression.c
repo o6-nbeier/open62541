@@ -71,7 +71,7 @@ START_TEST(compressionRoundtripAndLimit) {
         UA_ByteString_clear(&compressed);
     }
 
-    UA_ByteString malformed = UA_BYTESTRING("not-a-compressed-stream");
+    UA_ByteString malformed = UA_BYTESTRING_RAW("not-a-compressed-stream", sizeof("not-a-compressed-stream")-1);
     UA_ByteString output = UA_BYTESTRING_NULL;
     ck_assert_uint_eq(UA_HTTP_decompress(UA_HTTP_CONTENT_ENCODING_GZIP,
                                          &malformed, 1024, &output),
